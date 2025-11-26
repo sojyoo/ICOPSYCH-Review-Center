@@ -1,0 +1,16 @@
+# Render.com configuration for ML API
+# Place this in the root directory of your repository
+
+services:
+  - type: web
+    name: ml-recommendations-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT ml_recommendations_api:app
+    envVars:
+      - key: PORT
+        value: 5000
+    # Add your model files and CSV files as part of the repository
+    # Make sure bsp4a_leak_free_model.pkl, adaptive_review_recommendations_clean.csv,
+    # and personalized_topic_recommendations.csv are in the repository root
+

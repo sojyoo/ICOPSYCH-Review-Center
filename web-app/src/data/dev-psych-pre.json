@@ -1,0 +1,394 @@
+{
+  "subject": "Developmental Psychology",
+  "week": 1,
+  "lecture": 1,
+  "questions": [
+    {
+      "question": "A scientific study that explains continuities and changes related to behavior, thinking, emotion, and personality and views development as a lifelong process.",
+      "options": [
+        "a. Developmental Psychology",
+        "b. Life-span Development",
+        "c. Human Development",
+        "d. All of the above"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "A school of thought that believes human abilities are inborn.",
+      "options": [
+        "a. Rationalism",
+        "b. Nativism",
+        "c. Empiricism",
+        "d. All of the above"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "It views that humans possess no innate tendencies and that all differences among humans are attributable to experience.",
+      "options": [
+        "a. Rationalism",
+        "b. Nativism",
+        "c. Empiricism"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Which of the following displays the goals of developmental psychology?",
+      "options": [
+        "a. Researchers observe large groups of children and establish norms, or averages, for behavior at various ages.",
+        "b. Researchers attempt to explain how children acquire language and why some children learn to speak later than usual",
+        "c. Researchers used their conclusion to predict future behavior, such as the likelihood that a child will have serious speech problems.",
+        "d. All of the above"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Which are the domains of development?",
+      "options": [
+        "a. Physical development, Cognitive development and Psychosocial development",
+        "b. Critical period and sensitive period",
+        "c. Biological, Psychological and Sociocultural development",
+        "d. Reactive development and active development"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "The following theoretical perspectives are related to each other except:",
+      "options": [
+        "a. Continuous: Quantitative Changes",
+        "b. Discontinuous: Qualitative Changes",
+        "c. Nurture: Learning",
+        "d. Nature: Environment"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Which of the following is right:",
+      "options": [
+        "a. infancy and toddlerhood, early childhood, middle childhood, adolescence, emerging and young adulthood, middle adulthood and late adulthood",
+        "b. infancy and toddlerhood, early childhood, middle childhood, adolescence, emerging and young adulthood and late adulthood",
+        "c. prenatal period, infancy and toddlerhood, early childhood, middle childhood, adolescence, emerging and young adulthood, middle adulthood and late adulthood",
+        "d. prenatal period, infancy and toddlerhood, early childhood, middle childhood, adolescence, young adulthood, middle adulthood and late adulthood"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "This is an influence on development that refers to characteristics of an event that occurs similarly for most people in a group.",
+      "options": [
+        "a. Normative influences",
+        "b. Normative age-graded influences",
+        "c. Normative history-graded influences",
+        "d. All of the above"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "This is an influence on development that refers to unusual events that have a major impact on individual lives because they disturb the expected sequence of the life cycle",
+      "options": [
+        "a. Non-normative influences",
+        "b. Non-normative age-graded influences",
+        "c. Non-normative history-graded influences",
+        "d. All of the above"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Refer to the times in development when a person is particularly open to certain kinds of experiences",
+      "options": [
+        "a. Critical period",
+        "b. Sensitive period",
+        "c. Crucial period",
+        "d. All of the above"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Refers to a specific time when a given event, or its absence, has a specific impact on development.",
+      "options": [
+        "a. Critical period",
+        "b. Sensitive period",
+        "c. Crucial period",
+        "d. All of the above"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Which is the most important period in human development?",
+      "options": [
+        "a. Prenatal period",
+        "b. Childhood",
+        "c. Late Adulthood",
+        "d. None of the above"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "If development manifests the capacity to change and improve then it means that",
+      "options": [
+        "a. Development is multidimensional",
+        "b. Development is multidirectional",
+        "c. Development shows plasticity",
+        "d. All of the above"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Refers to development within an individual’s family, peers, schools, country etc.",
+      "options": [
+        "a. Development is contextual",
+        "b. Development is multidirectional",
+        "c. Development shows plasticity",
+        "d. All of the above"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "What does it mean when an individual gain/expand in one area but they may also lose in another?",
+      "options": [
+        "a. Development is multidimensional",
+        "b. Development is multidirectional",
+        "c. Development shows plasticity",
+        "e. None of the above"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "What is a concept that says we are passive and will soak up experiences for our development?",
+      "options": [
+        "a. Passive Development",
+        "b. Reactive Development",
+        "c. Active Development",
+        "d. Proactive Development"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "What it is that argues about how we create experiences and are motivated to learn about the world around us?",
+      "options": [
+        "a. Passive Development",
+        "b. Reactive Development",
+        "c. Active Development",
+        "d. Proactive Development"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "What is/are that refer/s to the influence on development of the passing of traits to offspring from their parents or ancestors?",
+      "options": [
+        "a. Heredity",
+        "b. Genetics",
+        "c. Nature",
+        "d. Nurture"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Which of the following emphasizes the developmental change in response to the environment?",
+      "options": [
+        "a. Experience",
+        "b. Learning",
+        "c. Nature",
+        "d. Nurture"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "What is the concept that elaborates that development is gradual?",
+      "options": [
+        "a. Incremental Development",
+        "b. Gradual Development",
+        "c. Continuous Development",
+        "d. Discontinuous Development"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "In contrast to number 19, what concept believes that development is abrupt and uneven?",
+      "options": [
+        "a. Abrupt Development",
+        "b. Gradual Development",
+        "c. Continuous Development",
+        "d. Discontinuous Development"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Evangeline is doing a study in which her participants are of corporate workers from Gen Xs, Gen Ys and Gen Z. Then she is trying to figure out on how they utilize technological advancements at their jobs this year 2025. Evangeline is doing a:",
+      "options": [
+        "a. Research",
+        "b. Research in Longitudinal Design",
+        "c. Research in Cross-sectional Design",
+        "d. Research in Sequential Design"
+      ],
+      "correctIndex": 2,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Analyze the following statements: \nI. Correlational studies can show causal relationships. \nII. Correlational studies can assess the strength and direction of relationship.",
+      "options": [
+        "a. I is true but  II is false",
+        "b. I is false but II is true",
+        "c. I and II are both false",
+        "d. I and II are both true"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Angeline is doing a study in which her participants are Gen Alpha. The purpose of her study is to determine how her participants perform in their primary school (Grade 1 to Grade 6) after spending their early childhood education in an online class set-up. Angeline is doing a _",
+      "options": [
+        "a. Research",
+        "b. Research in Longitudinal Design",
+        "c. Research in Cross-sectional Design",
+        "d. Research in Sequential Design"
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Pauline is doing a case study in doing so she must consider/accept that her study will possibly",
+      "options": [
+        "a. Produce results that are not generalize",
+        "c. Be subject to cohort effects",
+        "d. All of the above"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Celine is frustrated at the moment because she spent 15 years on her study and now she’s experiencing a huge attrition rate across the groups of her participants. With these limitations it seems like Celine is doing a _",
+      "options": [
+        "a. Cross-cultural research",
+        "b. Research in Longitudinal Design",
+        "c. Research in Cross-sectional Design",
+        "d. Research in Sequential Design"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "When obtaining informed consent,  the researcher must inform research participants about the following except:",
+      "options": [
+        "a. how they cannot rescind consent if desired",
+        "b. the foreseeable consequences of declining or withdrawing",
+        "c. protections and limits of confidentiality and/or anonymity",
+        "d. All of the above"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Analyze the following statements: \nI. In longitudinal research, researchers may need to obtain informed consent on more than one occasion. \nII. In longitudinal research, researchers may not need to obtain informed consent on more than one occasion because the one signed informed consent can compensate the rest of the study.",
+      "options": [
+        "a. I is true but II is false",
+        "b. I is false but II is true",
+        "c. I and II are both false",
+        "d. I and II are both true"
+      ],
+      "correctIndex": 0,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Darlene is the CAS Governor, as the graduation nears she is planning to conduct a survey to ask the graduating class, what theme they prefer to have for their graduation ball? Now the survey is distributed and you noticed that she dispensed the informed consent. As a psychology student what would you say as Darlene dispensed the informed consent?",
+      "options": [
+        "a. Reiterate to Darlene that any surveys must consist an informed consent.",
+        "b. Nothing. I will just answer it even without informed consent because the survey is a normal educational practice.",
+        "c. Reiterate to Darlene that as a College governor she must be mindful with preparing surveys as confidential responses are to be collected."
+      ],
+      "correctIndex": 1,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    },
+    {
+      "question": "Analyze the following statement: \nI. When we conduct research with persons below 18 years of age solely having an informed consent from their parents or legal guardian is another alternative measure to do.\nII. When we conduct research with persons below 18 years of age, we obtain informed assent from them and informed consent from their parents or legal guardian.\nIII. When we conduct research with adult participants who have difficulties in comprehension or communication, we obtain informed consent from adult family members of the participants and approval from independent advisors",
+      "options": [
+        "a. All of them are true",
+        "b. I and II are true",
+        "c. I and III are true",
+        "d. II and III are true"
+      ],
+      "correctIndex": 3,
+      "subject": "Developmental Psychology",
+      "week": 1,
+      "lecture": 1
+    }
+  ]
+}
