@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { 
@@ -40,7 +40,7 @@ interface TestResult {
   }>
 }
 
-export default function TestResultsPage() {
+function TestResultsPageContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -473,5 +473,13 @@ export default function TestResultsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TestResultsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <TestResultsPageContent />
+    </Suspense>
   )
 }

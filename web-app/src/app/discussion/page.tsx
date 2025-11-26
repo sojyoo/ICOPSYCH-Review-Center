@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { getLectureContent, LectureContent } from '@/data/lectures'
 
-export default function DiscussionPage() {
+function DiscussionPageContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -328,6 +328,14 @@ export default function DiscussionPage() {
 
       </div>
     </div>
+  )
+}
+
+export default function DiscussionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <DiscussionPageContent />
+    </Suspense>
   )
 }
 
