@@ -4,3 +4,4 @@ export default function Home() {
   // Redirect to login page
   redirect('/login')
 }
+
