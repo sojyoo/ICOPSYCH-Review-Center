@@ -54,7 +54,7 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
 
       const bank = type === 'pre-test' ? preSubset : postSubset
 
-      const staticQuestions = bank.map((question, index) => ({
+      const staticQuestions = bank.map((question: any, index) => ({
         id: `dev-psych-${type}-${index + 1}`,
         question: question.question,
         options: question.options,
