@@ -138,10 +138,3 @@ async function checkTestAccess(userId: string, week: number, lecture: number, su
   }
 }
 
-// Legacy function for backward compatibility
-export async function canTakeTest(userId: string, week: number, lecture: number, subjects: string[], type: string) {
-  const result = await checkTestAccess(userId, week, lecture, subjects, type)
-  return result.canTake
-}
-
-
