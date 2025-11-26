@@ -138,23 +138,6 @@ function LoginPageContent() {
             </div>
           </form>
         </div>
-
-        {/* Demo Accounts */}
-        <div className="mt-8 bg-white py-6 px-6 shadow-lg rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900 mb-4 text-center">Demo Accounts</h3>
-          <div className="space-y-3">
-            <div className="bg-blue-50 p-3 rounded-md">
-              <p className="text-sm font-medium text-blue-900">Admin Account</p>
-              <p className="text-xs text-blue-700">admin@reviewcenter.com</p>
-              <p className="text-xs text-blue-700">password123</p>
-            </div>
-            <div className="bg-green-50 p-3 rounded-md">
-              <p className="text-sm font-medium text-green-900">Student Account</p>
-              <p className="text-xs text-green-700">student@reviewcenter.com</p>
-              <p className="text-xs text-green-700">password123</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
