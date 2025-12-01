@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate current scores by subject
-    const subjectScores: Record<string, number> = {}
+    const subjectScores: Record<string, { total: number; correct: number }> = {}
     const scoreTrend: number[] = []
 
     testAttempts.forEach(attempt => {
