@@ -11,32 +11,32 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  studentNumber  String?  @unique
-  name           String?
-  password       String?
-  role           String   @default("student") // student, admin
-  cohortId       String?
-  cohort         String?  @default("ICOPSYCH-2025") // ICOPSYCH-2025, etc.
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  studentNumber String?  @unique
+  name          String?
+  password      String?
+  role          String   @default("student") // student, admin
+  cohortId      String?
+  cohort        String?  @default("ICOPSYCH-2025") // ICOPSYCH-2025, etc.
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
-  cohortRelation Cohort?      @relation(fields: [cohortId], references: [id])
+  cohortRelation Cohort?       @relation(fields: [cohortId], references: [id])
   testAttempts   TestAttempt[]
 
   @@map("users")
 }
 
 model Cohort {
-  id          String   @id @default(cuid())
-  name        String   @unique // ICOPSYCH-2025
+  id          String    @id @default(cuid())
+  name        String    @unique // ICOPSYCH-2025
   description String?
   startDate   DateTime?
   endDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   // Relations
   users User[]
@@ -45,36 +45,37 @@ model Cohort {
 }
 
 model Question {
-  id            String   @id @default(cuid())
-  question      String
-  options       String   // JSON array of options
-  correctIndex  Int
-  subject       String
-  difficulty    String   @default("medium") // easy, medium, hard
-  lecture       Int      // 1, 2, 3
-  week          Int      // Week number
-  explanation   String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(cuid())
+  question     String
+  options      String // JSON array of options
+  correctIndex Int
+  subject      String
+  difficulty   String   @default("medium") // easy, medium, hard
+  lecture      Int // 1, 2, 3
+  week         Int // Week number
+  explanation  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  attempts QuestionAttempt[]
+  attempts         QuestionAttempt[]
+  questionConcepts QuestionConcept[]
 
   @@map("questions")
 }
 
 model Test {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  type        String   // pre-test, post-test, mock-exam
-  weekNumber  Int?
-  lecture     Int?
-  subjects    String?  // JSON array of subjects
-  timeLimit   Int?     // in minutes
+  id             String   @id @default(cuid())
+  title          String
+  description    String?
+  type           String // pre-test, post-test, mock-exam
+  weekNumber     Int?
+  lecture        Int?
+  subjects       String? // JSON array of subjects
+  timeLimit      Int? // in minutes
   totalQuestions Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
   attempts TestAttempt[]
@@ -86,14 +87,14 @@ model TestAttempt {
   id             String    @id @default(cuid())
   userId         String
   testId         String?
-  testType       String    // pre-test, post-test, mock-exam
-  weekNumber     Int?      // Week number for schedule-based tests
-  lecture        Int?      // Lecture number (1, 2, 3)
-  subjects       String?   // JSON string of subjects for this test
-  score          Int       // Total correct answers
-  totalQuestions Int       // Total questions
-  timeSpent      Int       // Time spent in seconds
-  subjectScores  String?   // JSON string of subject scores
+  testType       String // pre-test, post-test, mock-exam
+  weekNumber     Int? // Week number for schedule-based tests
+  lecture        Int? // Lecture number (1, 2, 3)
+  subjects       String? // JSON string of subjects for this test
+  score          Int // Total correct answers
+  totalQuestions Int // Total questions
+  timeSpent      Int // Time spent in seconds
+  subjectScores  String? // JSON string of subject scores
   completedAt    DateTime? // When the test was completed
   createdAt      DateTime  @default(now())
 
@@ -106,13 +107,13 @@ model TestAttempt {
 }
 
 model QuestionAttempt {
-  id             String    @id @default(cuid())
+  id             String   @id @default(cuid())
   testAttemptId  String
   questionId     String
   selectedOption Int
   isCorrect      Boolean
-  timeSpent      Int?      // Time spent on this question in seconds
-  createdAt      DateTime  @default(now())
+  timeSpent      Int? // Time spent on this question in seconds
+  createdAt      DateTime @default(now())
 
   // Relations
   testAttempt TestAttempt @relation(fields: [testAttemptId], references: [id])
@@ -126,7 +127,7 @@ model StudyPlan {
   userId      String
   title       String
   description String?
-  subjects    String   // JSON array of subjects
+  subjects    String // JSON array of subjects
   startDate   DateTime
   endDate     DateTime
   isActive    Boolean  @default(true)
@@ -137,19 +138,92 @@ model StudyPlan {
 }
 
 model CalendarEvent {
-  id          String   @id @default(cuid())
-  userId      String
-  title       String
-  description String?
-  startTime   DateTime
-  endTime     DateTime
-  type        String   // study, test, discussion, mock-exam
-  weekNumber  Int?
-  lecture     Int?
-  subjects    String?  // JSON array of subjects
+  id            String   @id @default(cuid())
+  userId        String
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  type          String // study, test, discussion, mock-exam
+  weekNumber    Int?
+  lecture       Int?
+  subjects      String? // JSON array of subjects
   googleEventId String? // For Google Calendar sync
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("calendar_events")
+}
+
+model Concept {
+  id          String   @id @default(cuid())
+  name        String
+  subject     String
+  topic       String? // e.g., "DSM-5_Criteria", "Piaget_Stages"
+  description String?
+  difficulty  String   @default("medium") // easy, medium, hard
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("calendar_events")
+  // Relations
+  masteryRecords   ConceptMastery[]
+  questionConcepts QuestionConcept[]
+
+  @@unique([name, subject])
+  @@map("concepts")
+}
+
+model QuestionConcept {
+  id         String @id @default(cuid())
+  questionId String
+  conceptId  String
+  weight     Float  @default(1.0) // How much this concept contributes to the question
+
+  // Relations
+  question Question @relation(fields: [questionId], references: [id])
+  concept  Concept  @relation(fields: [conceptId], references: [id])
+
+  @@unique([questionId, conceptId])
+  @@map("question_concepts")
+}
+
+model ConceptMastery {
+  id              String    @id @default(cuid())
+  userId          String
+  conceptId       String
+  masteryLevel    Float     @default(0.0) // 0.0 to 1.0 (probability of mastery)
+  attempts        Int       @default(0)
+  correctAttempts Int       @default(0)
+  lastReviewed    DateTime?
+  nextReviewDate  DateTime? // For spaced repetition
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  concept Concept @relation(fields: [conceptId], references: [id])
+
+  @@unique([userId, conceptId])
+  @@index([userId])
+  @@index([nextReviewDate])
+  @@map("concept_mastery")
+}
+
+model AtRiskAlert {
+  id              String    @id @default(cuid())
+  userId          String
+  riskLevel       String // low, medium, high, critical
+  riskScore       Float // 0.0 to 1.0
+  predictedScore  Float? // Predicted final score
+  weeksUntilExam  Int?
+  reasons         String // JSON array of risk factors
+  recommendations String // JSON array of recommended actions
+  isResolved      Boolean   @default(false)
+  resolvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([riskLevel])
+  @@index([isResolved])
+  @@map("at_risk_alerts")
 }
