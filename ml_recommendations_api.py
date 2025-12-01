@@ -2,6 +2,7 @@
 """
 ML Recommendations API for the adaptive review system
 Provides real-time recommendations using the trained Random Forest model
+Enhanced with Concept Mastery Tracking, Early Intervention, and Spaced Repetition
 """
 
 import pandas as pd
@@ -11,6 +12,12 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from datetime import datetime, timedelta
+from concept_mastery_tracker import (
+    ConceptMasteryTracker,
+    SpacedRepetitionScheduler,
+    EarlyInterventionDetector
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +26,11 @@ CORS(app)
 model = None
 recommendations_data = None
 topic_recommendations = None
+
+# Initialize new ML components
+concept_tracker = ConceptMasteryTracker()
+spaced_repetition = SpacedRepetitionScheduler()
+early_intervention = EarlyInterventionDetector()
 
 def load_models():
     """Load the trained ML model and recommendation data"""
@@ -268,13 +280,140 @@ def predict_performance():
         print(f"Error in predict endpoint: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/concept-mastery/update', methods=['POST'])
+def update_concept_mastery():
+    """Update concept mastery after a question attempt"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'conceptId' not in data or 'isCorrect' not in data:
+            return jsonify({'error': 'conceptId and isCorrect are required'}), 400
+        
+        concept_id = data['conceptId']
+        is_correct = data['isCorrect']
+        current_mastery = data.get('currentMastery', 0.0)
+        attempts = data.get('attempts', 0)
+        correct_attempts = data.get('correctAttempts', 0)
+        
+        # Update mastery using BKT
+        updated = concept_tracker.update_from_question_attempt(
+            current_mastery=current_mastery,
+            attempts=attempts,
+            correct_attempts=correct_attempts,
+            is_correct=is_correct
+        )
+        
+        # Calculate next review date using spaced repetition
+        last_review = datetime.fromisoformat(updated['lastReviewed']) if updated.get('lastReviewed') else datetime.now()
+        next_review = spaced_repetition.calculate_next_review(
+            current_mastery=updated['masteryLevel'],
+            last_review_date=last_review,
+            current_interval=data.get('currentInterval', 1),
+            ease_factor=data.get('easeFactor', 2.5)
+        )
+        
+        updated['nextReviewDate'] = next_review['nextReviewDate']
+        updated['interval'] = next_review['interval']
+        updated['easeFactor'] = next_review['easeFactor']
+        
+        return jsonify(updated)
+        
+    except Exception as e:
+        print(f"Error updating concept mastery: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/concept-mastery/summary', methods=['POST'])
+def get_concept_mastery_summary():
+    """Get summary of concept mastery for a student"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'masteryRecords' not in data:
+            return jsonify({'error': 'masteryRecords are required'}), 400
+        
+        mastery_records = data['masteryRecords']
+        threshold = data.get('threshold', 0.7)
+        
+        summary = concept_tracker.get_mastery_summary(mastery_records)
+        weak_concepts = concept_tracker.get_weak_concepts(mastery_records, threshold)
+        
+        return jsonify({
+            'summary': summary,
+            'weakConcepts': weak_concepts[:10]  # Top 10 weakest
+        })
+        
+    except Exception as e:
+        print(f"Error getting concept mastery summary: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/spaced-repetition/due', methods=['POST'])
+def get_due_concepts():
+    """Get concepts due for review"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'masteryRecords' not in data:
+            return jsonify({'error': 'masteryRecords are required'}), 400
+        
+        mastery_records = data['masteryRecords']
+        current_date = data.get('currentDate')
+        
+        if current_date:
+            current_date = datetime.fromisoformat(current_date)
+        
+        due_concepts = spaced_repetition.get_due_concepts(mastery_records, current_date)
+        
+        return jsonify({
+            'dueConcepts': due_concepts,
+            'count': len(due_concepts)
+        })
+        
+    except Exception as e:
+        print(f"Error getting due concepts: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/early-intervention/assess', methods=['POST'])
+def assess_risk():
+    """Assess student risk and generate early intervention recommendations"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'currentScores' not in data:
+            return jsonify({'error': 'currentScores are required'}), 400
+        
+        current_scores = data['currentScores']  # Dict of subject: score
+        score_trend = data.get('scoreTrend', [])  # List of historical scores
+        consistency = data.get('consistency', 0.8)  # Score consistency (0-1)
+        improvement_rate = data.get('improvementRate', 1.0)  # % improvement per week
+        weeks_until_exam = data.get('weeksUntilExam', 8)
+        
+        risk_assessment = early_intervention.calculate_risk_score(
+            current_scores=current_scores,
+            score_trend=score_trend,
+            consistency=consistency,
+            improvement_rate=improvement_rate,
+            weeks_until_exam=weeks_until_exam
+        )
+        
+        return jsonify(risk_assessment)
+        
+    except Exception as e:
+        print(f"Error assessing risk: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
 if __name__ == '__main__':
     # Load models on startup
     if load_models():
         print("Starting ML Recommendations API...")
+        print("✅ Concept Mastery Tracking: Enabled")
+        print("✅ Spaced Repetition: Enabled")
+        print("✅ Early Intervention: Enabled")
         app.run(host='0.0.0.0', port=5000, debug=True)
     else:
         print("Failed to load models. API will run with fallback recommendations.")
+        print("✅ Concept Mastery Tracking: Enabled")
+        print("✅ Spaced Repetition: Enabled")
+        print("✅ Early Intervention: Enabled")
         app.run(host='0.0.0.0', port=5000, debug=True)
 
 
