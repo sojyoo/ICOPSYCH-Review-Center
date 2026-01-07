@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { getCurrentWeek, getWeekByNumber, ICOPSYCH_SCHEDULE } from "@/lib/schedule"
 
 export const dynamic = 'force-dynamic'
+// Trigger Vercel redeploy
 
 interface StudyTask {
   day: string
