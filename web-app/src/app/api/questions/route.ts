@@ -132,7 +132,7 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
 
     // If we don't have enough unique questions for the requested subjects, 
     // supplement with questions from all subjects
-    if (uniqueQuestions.length < 10 && type !== 'mock-exam') {
+    if (uniqueQuestions.length < 20 && type !== 'mock-exam') {
       console.log('📚 Not enough unique questions, supplementing with all subjects...')
       
       const allQuestions = await prisma.question.findMany({
@@ -197,26 +197,26 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       
       // Take 5 questions from each subject (or all available if less than 5)
       const questionsPerSubject = 5
-      const finalQuestions: typeof formattedQuestions = []
+      const selectedQuestions: typeof formattedQuestions = []
       
       coreSubjects.forEach(subject => {
         const subjectQuestions = questionsBySubject[subject] || []
         const questionsToTake = Math.min(questionsPerSubject, subjectQuestions.length)
-        finalQuestions.push(...subjectQuestions.slice(0, questionsToTake))
+        selectedQuestions.push(...subjectQuestions.slice(0, questionsToTake))
       })
       
       // If we don't have enough questions from core subjects, supplement with any available
-      if (finalQuestions.length < questionLimit) {
-        const remaining = questionLimit - finalQuestions.length
-        const usedQuestionIds = new Set(finalQuestions.map(q => q.id))
+      if (selectedQuestions.length < questionLimit) {
+        const remaining = questionLimit - selectedQuestions.length
+        const usedQuestionIds = new Set(selectedQuestions.map(q => q.id))
         const additionalQuestions = formattedQuestions
           .filter(q => !usedQuestionIds.has(q.id))
           .slice(0, remaining)
-        finalQuestions.push(...additionalQuestions)
+        selectedQuestions.push(...additionalQuestions)
       }
       
       // Shuffle the final questions to mix subjects
-      formattedQuestions = shuffleArray(finalQuestions.slice(0, questionLimit))
+      formattedQuestions = shuffleArray(selectedQuestions.slice(0, questionLimit))
     } else if (type === 'mock-exam') {
       formattedQuestions = shuffleArray(formattedQuestions)
       formattedQuestions = formattedQuestions.slice(0, Math.min(questionLimit, formattedQuestions.length))
@@ -272,7 +272,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 function generateMockQuestions(week: number, lecture: number, subjects: string[], type: string) {
-  const questionCount = type === 'mock-exam' ? 100 : 10
+  const questionCount = type === 'mock-exam' ? 100 : 20
   const questions = []
 
   for (let i = 1; i <= questionCount; i++) {
