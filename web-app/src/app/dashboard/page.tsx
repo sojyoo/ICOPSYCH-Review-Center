@@ -1,4 +1,5 @@
 'use client'
+// Trigger Vercel redeploy
 
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
