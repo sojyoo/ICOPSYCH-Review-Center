@@ -88,6 +88,9 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
   const updateHabitItem = (category: 'activeLearning' | 'planning' | 'discipline', itemKey: string, value: number) => {
     console.log(`🎚️ Updating ${category}.${itemKey} to ${value} (${Math.round(value * 100)}%)`)
     
+    // Mark that user has interacted with sliders
+    userHasInteracted.current = true
+    
     // Use functional update to ensure we have the latest state
     setHabitItems(prevItems => {
       const newItems = {
@@ -138,23 +141,27 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
 
   useEffect(() => {
     loadPreferences()
-    // Reset the flag when reloadTrigger changes (component remounts)
+    // Reset the flags when reloadTrigger changes (component remounts)
     if (reloadTrigger !== undefined) {
       hasLoadedOnce.current = false
+      userHasInteracted.current = false
     }
   }, [reloadTrigger]) // Reload when reloadTrigger changes
 
   // Track if we've loaded preferences at least once
   const hasLoadedOnce = useRef(false)
+  // Track if user has interacted with sliders to prevent resetting them
+  const userHasInteracted = useRef(false)
   
-  // Only sync habitItems from preferences if they change externally AND we haven't loaded yet
+  // Only sync habitItems from preferences on initial load
   // This prevents resetting sliders when the user has already set them
   useEffect(() => {
     // Only sync if:
     // 1. Preferences exist
     // 2. We haven't loaded preferences yet (first mount)
     // 3. The habitItems are still at default (all zeros) - meaning user hasn't interacted yet
-    if (preferences && !hasLoadedOnce.current) {
+    // 4. User hasn't interacted with sliders yet
+    if (preferences && !hasLoadedOnce.current && !userHasInteracted.current) {
       const allItemsAreZero = 
         Object.values(habitItems.activeLearning).every(v => v === 0) &&
         Object.values(habitItems.planning).every(v => v === 0) &&
@@ -192,7 +199,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
         }
       }
     }
-  }, [preferences?.habitActiveLearning, preferences?.habitPlanning, preferences?.habitDiscipline]) // Only depend on the composite scores
+  }, [preferences]) // Only depend on preferences object, not individual composite scores
 
   const loadPreferences = async () => {
     try {
