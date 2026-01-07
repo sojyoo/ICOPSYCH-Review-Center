@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Clock, Calendar, Target, AlertCircle, CheckCircle, TrendingUp, ChevronLeft, ChevronRight, Brain } from 'lucide-react'
+import { Clock, Calendar, Target, AlertCircle, CheckCircle, TrendingUp, ChevronLeft, ChevronRight, Brain, Plus } from 'lucide-react'
 
 interface StudyTask {
   day: string
@@ -60,6 +60,8 @@ export default function WeeklyStudyPlanComponent() {
   const [plan, setPlan] = useState<WeeklyStudyPlan | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentWeek, setCurrentWeek] = useState(1)
+  const [showLogModal, setShowLogModal] = useState(false)
+  const [selectedActivity, setSelectedActivity] = useState<{topic: string, subject: string, description: string, startTime: string, endTime: string, duration: number} | null>(null)
 
   useEffect(() => {
     loadPlan(currentWeek)
@@ -96,6 +98,51 @@ export default function WeeklyStudyPlanComponent() {
       case 'low': return 'border-green-300 bg-green-50'
       default: return 'border-gray-300 bg-gray-50'
     }
+  }
+
+  const handleLogSession = async (sessionData: any) => {
+    try {
+      const response = await fetch('/api/study-sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sessionData)
+      })
+
+      if (response.ok) {
+        setShowLogModal(false)
+        setSelectedActivity(null)
+        // Refresh the page to update stats
+        window.location.reload()
+      } else {
+        alert('Failed to log session')
+      }
+    } catch (error) {
+      console.error('Error logging session:', error)
+      alert('Error logging session')
+    }
+  }
+
+  const handleLogFromActivity = (slot: any, day: StudyTask) => {
+    // Calculate actual start/end times based on the day's date and slot times
+    const dayDate = new Date(day.date)
+    const [startHour, startMin] = slot.startTime.split(':').map(Number)
+    const [endHour, endMin] = slot.endTime.split(':').map(Number)
+    
+    const startDateTime = new Date(dayDate)
+    startDateTime.setHours(startHour, startMin, 0, 0)
+    
+    const endDateTime = new Date(startDateTime)
+    endDateTime.setMinutes(endDateTime.getMinutes() + slot.duration)
+    
+    setSelectedActivity({
+      topic: slot.topic,
+      subject: slot.subject,
+      description: slot.description,
+      startTime: startDateTime.toISOString().slice(0, 16),
+      endTime: endDateTime.toISOString().slice(0, 16),
+      duration: slot.duration
+    })
+    setShowLogModal(true)
   }
 
   const getTypeIcon = (type: string) => {
@@ -323,20 +370,30 @@ export default function WeeklyStudyPlanComponent() {
                       </div>
                     </div>
                     <p className="text-sm text-gray-700">{slot.description}</p>
-                    <div className="mt-2 flex items-center space-x-2">
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        slot.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        slot.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {slot.priority} priority
-                      </span>
-                      {plan.mlStatus === 'available' && slot.priority === 'high' && (
-                        <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded flex items-center">
-                          <Brain className="h-3 w-3 mr-1" />
-                          ML-Driven
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          slot.priority === 'high' ? 'bg-red-100 text-red-800' :
+                          slot.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {slot.priority} priority
                         </span>
-                      )}
+                        {plan.mlStatus === 'available' && slot.priority === 'high' && (
+                          <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded flex items-center">
+                            <Brain className="h-3 w-3 mr-1" />
+                            ML-Driven
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleLogFromActivity(slot, day)}
+                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors flex items-center"
+                        title="Log study session for this activity"
+                      >
+                        <Plus className="h-3 w-3 mr-1" />
+                        Log Session
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -377,6 +434,133 @@ export default function WeeklyStudyPlanComponent() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Log Session Modal */}
+      {showLogModal && selectedActivity && (
+        <LogSessionModal
+          onClose={() => {
+            setShowLogModal(false)
+            setSelectedActivity(null)
+          }}
+          onSave={handleLogSession}
+          activity={selectedActivity}
+        />
+      )}
+    </div>
+  )
+}
+
+// Log Session Modal Component
+function LogSessionModal({ 
+  onClose, 
+  onSave, 
+  activity 
+}: { 
+  onClose: () => void
+  onSave: (data: any) => void
+  activity: {topic: string, subject: string, description: string, startTime: string, endTime: string, duration: number}
+}) {
+  const [formData, setFormData] = useState({
+    title: activity.topic,
+    startTime: activity.startTime,
+    endTime: activity.endTime,
+    subject: activity.subject,
+    description: activity.description
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSave({
+      ...formData,
+      startTime: new Date(formData.startTime).toISOString(),
+      endTime: new Date(formData.endTime).toISOString()
+    })
+  }
+
+  const subjects = ['Abnormal Psychology', 'Developmental Psychology', 'Industrial Psychology', 'Psychological Assessment']
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 className="text-xl font-semibold mb-4">Log Study Session</h3>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              required
+              placeholder="e.g., Reviewed DSM-5 Criteria"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Start Time *</label>
+              <input
+                type="datetime-local"
+                value={formData.startTime}
+                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">End Time *</label>
+              <input
+                type="datetime-local"
+                value={formData.endTime}
+                onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+            <select
+              value={formData.subject}
+              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Select subject</option>
+              {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+              placeholder="What did you study?"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-4 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            >
+              Log Session
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

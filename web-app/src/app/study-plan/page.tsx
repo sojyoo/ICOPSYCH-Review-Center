@@ -15,8 +15,7 @@ import {
   Calendar,
   Play,
   Filter,
-  Search,
-  Plus
+  Search
 } from 'lucide-react'
 import WeeklyStudyPlanComponent from '@/components/WeeklyStudyPlan'
 
@@ -41,8 +40,6 @@ export default function StudyPlanPage() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'weakness' | 'strength' | 'review' | 'practice'>('all')
   const [activeTab, setActiveTab] = useState<'weekly' | 'recommendations'>('weekly')
   const [sessionStats, setSessionStats] = useState<{totalHours: number, todayHours: number, totalSessions: number, streak: number} | null>(null)
-  const [showLogModal, setShowLogModal] = useState(false)
-  const [selectedRecommendation, setSelectedRecommendation] = useState<StudyRecommendation | null>(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -91,31 +88,6 @@ export default function StudyPlanPage() {
     }
   }
 
-  const handleLogSession = async (sessionData: any) => {
-    try {
-      const response = await fetch('/api/study-sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sessionData)
-      })
-
-      if (response.ok) {
-        setShowLogModal(false)
-        setSelectedRecommendation(null)
-        loadSessionStats()
-      } else {
-        alert('Failed to log session')
-      }
-    } catch (error) {
-      console.error('Error logging session:', error)
-      alert('Error logging session')
-    }
-  }
-
-  const handleLogFromRecommendation = (recommendation: StudyRecommendation) => {
-    setSelectedRecommendation(recommendation)
-    setShowLogModal(true)
-  }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -360,23 +332,13 @@ export default function StudyPlanPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleLogFromRecommendation(recommendation)}
-                      className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
-                      title="Log study session for this activity"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Log Session
-                    </button>
-                    <button
-                      onClick={() => handleStartRecommendation(recommendation)}
-                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center"
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      Start
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleStartRecommendation(recommendation)}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center"
+                  >
+                    <Play className="h-4 w-4 mr-2" />
+                    Start
+                  </button>
                 </div>
                 
                 <p className="text-gray-700 mb-4">{recommendation.description}</p>
@@ -456,136 +418,11 @@ export default function StudyPlanPage() {
           </>
         )}
 
-        {/* Log Session Modal */}
-        {showLogModal && (
-          <LogSessionModal
-            onClose={() => {
-              setShowLogModal(false)
-              setSelectedRecommendation(null)
-            }}
-            onSave={handleLogSession}
-            recommendation={selectedRecommendation}
-          />
-        )}
       </div>
     </div>
   )
 }
 
-// Log Session Modal Component
-function LogSessionModal({ 
-  onClose, 
-  onSave, 
-  recommendation 
-}: { 
-  onClose: () => void
-  onSave: (data: any) => void
-  recommendation: StudyRecommendation | null
-}) {
-  const [formData, setFormData] = useState({
-    title: recommendation?.title || '',
-    startTime: new Date().toISOString().slice(0, 16),
-    endTime: new Date(Date.now() + (recommendation?.estimatedTime || 60) * 60 * 1000).toISOString().slice(0, 16),
-    subject: recommendation?.subjects[0] || '',
-    description: recommendation?.description || ''
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave({
-      ...formData,
-      startTime: new Date(formData.startTime).toISOString(),
-      endTime: new Date(formData.endTime).toISOString()
-    })
-  }
-
-  const subjects = ['Abnormal Psychology', 'Developmental Psychology', 'Industrial Psychology', 'Psychological Assessment']
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full">
-        <h3 className="text-xl font-semibold mb-4">Log Study Session</h3>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              required
-              placeholder="e.g., Reviewed DSM-5 Criteria"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Time *</label>
-              <input
-                type="datetime-local"
-                value={formData.startTime}
-                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Time *</label>
-              <input
-                type="datetime-local"
-                value={formData.endTime}
-                onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-            <select
-              value={formData.subject}
-              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="">Select subject</option>
-              {subjects.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
-              placeholder="What did you study?"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-            >
-              Log Session
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
 
 
 
