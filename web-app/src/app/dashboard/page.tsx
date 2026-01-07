@@ -26,7 +26,6 @@ import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedu
 import DailyStudyDashboard from '@/components/DailyStudyDashboard'
 import UserPreferences from '@/components/UserPreferences'
 import OnboardingModal from '@/components/OnboardingModal'
-import StudySessionTracker from '@/components/StudySessionTracker'
 import RiskLevelCard from '@/components/RiskLevelCard'
 import FeatureDisplay from '@/components/FeatureDisplay'
 
@@ -151,7 +150,6 @@ export default function DashboardPage() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "daily-study", label: "Today's Plan", icon: Clock },
-    { id: "study-sessions", label: "Study Sessions", icon: Clock },
     { id: "schedule", label: "Schedule", icon: Calendar },
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
@@ -318,7 +316,6 @@ export default function DashboardPage() {
             {activeTab === 'schedule' && <ScheduleContent currentWeek={currentWeek} userStats={userStats} />}
             {activeTab === 'progress' && <ProgressContent userStats={userStats} />}
             {activeTab === 'daily-study' && <DailyStudyDashboard />}
-            {activeTab === 'study-sessions' && <StudySessionTracker />}
             {activeTab === 'preferences' && (
               <UserPreferences 
                 key="preferences"
