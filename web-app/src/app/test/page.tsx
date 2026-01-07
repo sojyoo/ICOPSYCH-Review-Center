@@ -242,6 +242,18 @@ function TestPageContent() {
   }
 
   const handlePageChange = (newPage: number) => {
+    // Check if all questions on current page are answered
+    const currentPageQuestions = getCurrentPageQuestions()
+    const unansweredOnCurrentPage = currentPageQuestions.filter(
+      q => testState.answers[q.id] === undefined
+    )
+    
+    if (unansweredOnCurrentPage.length > 0 && newPage > testState.currentPage) {
+      // Trying to go to next page with unanswered questions
+      alert(`Please answer all ${unansweredOnCurrentPage.length} question(s) on this page before continuing.`)
+      return
+    }
+    
     setTestState(prev => ({ ...prev, currentPage: newPage }))
   }
 
@@ -252,6 +264,18 @@ function TestPageContent() {
     if (testState.questions.length === 0) {
       console.warn('⚠️ Cannot submit: No questions loaded')
       return
+    }
+    
+    // Check if all questions are answered
+    const unansweredQuestions = testState.questions.filter(
+      q => testState.answers[q.id] === undefined
+    )
+    
+    if (unansweredQuestions.length > 0) {
+      const confirmMessage = `You have ${unansweredQuestions.length} unanswered question(s). Are you sure you want to submit the test?`
+      if (!confirm(confirmMessage)) {
+        return
+      }
     }
     
     setSubmitting(true)
@@ -547,37 +571,85 @@ function TestPageContent() {
           </button>
 
           <div className="flex space-x-1 sm:space-x-2 overflow-x-auto max-w-full px-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => handlePageChange(i)}
-                className={`min-w-[2.5rem] h-10 sm:w-8 sm:h-8 text-sm font-medium rounded touch-manipulation ${
-                  i === testState.currentPage
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {Array.from({ length: totalPages }, (_, i) => {
+              const currentPageQuestions = getCurrentPageQuestions()
+              const hasUnansweredOnCurrent = currentPageQuestions.some(
+                q => testState.answers[q.id] === undefined
+              )
+              const isBlocked = hasUnansweredOnCurrent && i > testState.currentPage
+              
+              return (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (isBlocked) {
+                      alert('Please answer all questions on the current page before navigating forward.')
+                      return
+                    }
+                    handlePageChange(i)
+                  }}
+                  disabled={isBlocked}
+                  className={`min-w-[2.5rem] h-10 sm:w-8 sm:h-8 text-sm font-medium rounded touch-manipulation ${
+                    i === testState.currentPage
+                      ? 'bg-indigo-600 text-white'
+                      : isBlocked
+                      ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                  title={isBlocked ? 'Answer all questions on current page first' : `Page ${i + 1}`}
+                >
+                  {i + 1}
+                </button>
+              )
+            })}
           </div>
 
           <button
             onClick={() => handlePageChange(testState.currentPage + 1)}
-            disabled={testState.currentPage === totalPages - 1}
+            disabled={(() => {
+              // Disable if on last page
+              if (testState.currentPage === totalPages - 1) return true
+              // Disable if there are unanswered questions on current page
+              const currentPageQuestions = getCurrentPageQuestions()
+              const hasUnanswered = currentPageQuestions.some(
+                q => testState.answers[q.id] === undefined
+              )
+              return hasUnanswered
+            })()}
             className="w-full sm:w-auto flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+            title={(() => {
+              const currentPageQuestions = getCurrentPageQuestions()
+              const unanswered = currentPageQuestions.filter(
+                q => testState.answers[q.id] === undefined
+              )
+              return unanswered.length > 0 
+                ? `Please answer all ${unanswered.length} question(s) on this page` 
+                : ''
+            })()}
           >
             Next
             <ArrowRight className="h-4 w-4 ml-2" />
           </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Progress and Submit Button */}
         <div className="mt-8 text-center">
+          <div className="mb-4 text-sm text-gray-600">
+            Answered: {getAnsweredCount()} / {testState.questions.length} questions
+            {getAnsweredCount() < testState.questions.length && (
+              <span className="ml-2 text-orange-600 font-medium">
+                ({testState.questions.length - getAnsweredCount()} unanswered)
+              </span>
+            )}
+          </div>
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="px-8 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className={`px-8 py-3 font-medium rounded-lg transition-colors ${
+              getAnsweredCount() < testState.questions.length
+                ? 'bg-orange-500 text-white hover:bg-orange-600'
+                : 'bg-green-600 text-white hover:bg-green-700'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {submitting ? (
               <div className="flex items-center">
@@ -587,7 +659,9 @@ function TestPageContent() {
             ) : (
               <div className="flex items-center">
                 <CheckCircle className="h-5 w-5 mr-2" />
-                Submit Test
+                {getAnsweredCount() < testState.questions.length 
+                  ? `Submit Test (${testState.questions.length - getAnsweredCount()} unanswered)`
+                  : 'Submit Test'}
               </div>
             )}
           </button>
