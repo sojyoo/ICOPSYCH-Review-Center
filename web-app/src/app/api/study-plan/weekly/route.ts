@@ -29,6 +29,12 @@ interface WeeklyStudyPlan {
   weekDate: string
   currentWeekTopic: string
   recommendedHours: number
+  recommendationIntensity: string
+  mlRiskLevel: string | null
+  mlStatus: string
+  mlRecommendations: any
+  totalAvailableHours: number
+  weeklyStudyGoal: number
   userPerformance: {
     currentWeekSubject: {
       subject: string
