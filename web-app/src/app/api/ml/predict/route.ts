@@ -174,189 +174,54 @@ export async function GET(request: NextRequest) {
     }
 
     // CRITICAL: Test scores are the PRIMARY risk indicator
-    // But we need to prioritize RECENT performance and IMPROVEMENT TRENDS
-    // A student who improves from 10% to 50% should see risk reduction, not stay at high risk
-    
-    // Calculate recent performance (weighted average favoring recent tests)
-    let recentScore = featureVector.overall_avg_score
-    let mostRecentScore = featureVector.overall_avg_score
-    
-    if (testAttempts.length > 0) {
-      // Get the most recent test score (most important indicator)
-      const mostRecent = testAttempts[0] // Already sorted by completedAt desc
-      if (mostRecent.subjectScores) {
-        const recentScores = JSON.parse(mostRecent.subjectScores)
-        const recentSubjectScores: number[] = []
-        Object.entries(recentScores).forEach(([subject, data]: [string, any]) => {
-          if (data.total > 0) {
-            const percentage = (data.correct / data.total) * 100
-            const points = (percentage / 100) * 30
-            recentSubjectScores.push(points)
-          }
-        })
-        if (recentSubjectScores.length > 0) {
-          mostRecentScore = recentSubjectScores.reduce((a, b) => a + b, 0) / recentSubjectScores.length
-        }
-      }
-      
-      // Calculate weighted average: 60% most recent, 30% second most recent, 10% older
-      if (testAttempts.length >= 2) {
-        const scores: number[] = []
-        testAttempts.slice(0, Math.min(3, testAttempts.length)).forEach((attempt, index) => {
-          if (attempt.subjectScores) {
-            const attemptScores = JSON.parse(attempt.subjectScores)
-            const subjectScores: number[] = []
-            Object.entries(attemptScores).forEach(([subject, data]: [string, any]) => {
-              if (data.total > 0) {
-                const percentage = (data.correct / data.total) * 100
-                const points = (percentage / 100) * 30
-                subjectScores.push(points)
-              }
-            })
-            if (subjectScores.length > 0) {
-              const avg = subjectScores.reduce((a, b) => a + b, 0) / subjectScores.length
-              scores.push(avg)
-            }
-          }
-        })
-        
-        if (scores.length >= 2) {
-          // Weighted: 60% most recent, 30% second, 10% third
-          const weights = [0.6, 0.3, 0.1]
-          recentScore = scores.reduce((sum, score, idx) => sum + (score * weights[idx] || 0), 0) / 
-                       weights.slice(0, scores.length).reduce((a, b) => a + b, 0)
-        } else if (scores.length === 1) {
-          recentScore = scores[0]
-        }
-      } else {
-        recentScore = mostRecentScore
-      }
-    }
+    // The ML model was trained with improvement_rate feature to recognize improvement trends
+    // We trust the ML model's prediction, but apply minimal safety overrides for extreme cases
     
     const overallScore = featureVector.overall_avg_score
     const improvementRate = featureVector.improvement_rate || 0
     
-    console.log(`📊 Risk Assessment Scores:`, {
-      overall_avg: overallScore.toFixed(2),
-      recent_weighted: recentScore.toFixed(2),
-      most_recent: mostRecentScore.toFixed(2),
+    console.log(`📊 Risk Assessment:`, {
+      overall_avg_score: overallScore.toFixed(2),
       improvement_rate: (improvementRate * 100).toFixed(1) + '%',
-      ml_prediction: mlPrediction.riskLevel
+      ml_prediction: mlPrediction.riskLevel,
+      ml_probabilities: mlPrediction.riskProbabilities
     })
     
-    // Use RECENT performance for risk assessment, not overall average
-    // This ensures improvements are reflected immediately
-    const assessmentScore = recentScore // Prioritize recent performance
-    
-    // Adjust for improvement: if improving significantly, reduce risk
-    let improvementAdjustment = 0
-    if (improvementRate > 0.3) { // >30% improvement
-      improvementAdjustment = 5 // Boost score by 5 points
-      console.log(`📈 Significant improvement detected (${(improvementRate * 100).toFixed(1)}%). Adjusting risk assessment.`)
-    } else if (improvementRate > 0.1) { // >10% improvement
-      improvementAdjustment = 2 // Boost score by 2 points
-      console.log(`📈 Improvement detected (${(improvementRate * 100).toFixed(1)}%). Adjusting risk assessment.`)
-    }
-    
-    const adjustedScore = assessmentScore + improvementAdjustment
-    
-    // Apply overrides based on RECENT performance (with improvement adjustment)
-    // This ensures students see immediate feedback when they improve
-    if (adjustedScore < 10) {
-      // Very low recent score (< 10/30 = < 33%) = HIGH RISK
-      console.log(`🚨 CRITICAL: Recent score is ${adjustedScore.toFixed(2)} (< 10). Overriding to HIGH risk.`)
-      mlPrediction = {
-        ...mlPrediction,
-        riskLevel: 'high',
-        riskProbabilities: {
-          high: 0.9,
-          medium: 0.08,
-          low: 0.02
-        }
-      }
-    } else if (adjustedScore < 15) {
-      // Low recent score (10-15/30 = 33-50%) = HIGH RISK
-      console.log(`⚠️ Recent score is ${adjustedScore.toFixed(2)} (< 15). Overriding to HIGH risk.`)
+    // Minimal safety overrides - only for extreme cases
+    // The ML model should handle most cases through its training on improvement_rate
+    if (overallScore < 10) {
+      // Extreme case: Very low overall score (< 10/30 = < 33%) = HIGH RISK
+      // This is a safety override to ensure critical cases are flagged
+      console.log(`🚨 Safety override: Overall score is ${overallScore.toFixed(2)} (< 10). Ensuring HIGH risk.`)
       if (mlPrediction.riskLevel !== 'high') {
         mlPrediction = {
           ...mlPrediction,
           riskLevel: 'high',
           riskProbabilities: {
-            high: 0.85,
-            medium: 0.12,
-            low: 0.03
+            high: 0.9,
+            medium: 0.08,
+            low: 0.02
           }
         }
       }
-    } else if (adjustedScore < 20) {
-      // Below average recent score (15-20/30 = 50-67%) = MEDIUM-HIGH RISK
-      // Allow ML model to decide, but if it says high, reduce confidence
-      console.log(`⚠️ Recent score is ${adjustedScore.toFixed(2)} (< 20). Risk level: ${mlPrediction.riskLevel}`)
-      if (mlPrediction.riskLevel === 'high' && improvementRate > 0.1) {
-        // If improving, reduce high risk confidence
-        console.log(`📈 Recent improvement detected. Reducing high risk confidence.`)
-        mlPrediction = {
-          ...mlPrediction,
-          riskLevel: 'medium',
-          riskProbabilities: {
-            high: 0.4,
-            medium: 0.5,
-            low: 0.1
-          }
-        }
-      } else if (mlPrediction.riskLevel === 'high') {
-        // Still high risk, but less confident
-        mlPrediction = {
-          ...mlPrediction,
-          riskLevel: 'high',
-          riskProbabilities: {
-            high: 0.65,
-            medium: 0.25,
-            low: 0.1
-          }
-        }
-      }
-    } else if (adjustedScore >= 20 && adjustedScore < 26) {
-      // Average to good (20-26/30 = 67-87%) = MEDIUM RISK
-      // If improving, could be low-medium
-      if (improvementRate > 0.2 && mlPrediction.riskLevel === 'high') {
-        console.log(`✅ Recent score ${adjustedScore.toFixed(2)} with improvement. Overriding HIGH to MEDIUM.`)
-        mlPrediction = {
-          ...mlPrediction,
-          riskLevel: 'medium',
-          riskProbabilities: {
-            high: 0.2,
-            medium: 0.65,
-            low: 0.15
-          }
-        }
-      } else if (mlPrediction.riskLevel === 'high') {
-        console.log(`✅ Recent score ${adjustedScore.toFixed(2)}. Overriding HIGH to MEDIUM.`)
-        mlPrediction = {
-          ...mlPrediction,
-          riskLevel: 'medium',
-          riskProbabilities: {
-            high: 0.25,
-            medium: 0.6,
-            low: 0.15
-          }
-        }
-      }
-    } else if (adjustedScore >= 26) {
-      // High score (>= 26/30 = >= 87%) = LOW-MEDIUM RISK
-      if (mlPrediction.riskLevel === 'high') {
-        console.log(`✅ Recent score is ${adjustedScore.toFixed(2)} (>= 26). Overriding HIGH to MEDIUM/LOW.`)
-        mlPrediction = {
-          ...mlPrediction,
-          riskLevel: improvementRate > 0.1 ? 'low' : 'medium',
-          riskProbabilities: {
-            high: 0.1,
-            medium: improvementRate > 0.1 ? 0.3 : 0.6,
-            low: improvementRate > 0.1 ? 0.6 : 0.3
-          }
+    } else if (overallScore >= 26 && mlPrediction.riskLevel === 'high') {
+      // Safety override: High score (>= 26/30 = >= 87%) should not be high risk
+      // This prevents model errors from flagging high performers as high risk
+      console.log(`✅ Safety override: Overall score is ${overallScore.toFixed(2)} (>= 26). Reducing HIGH risk.`)
+      mlPrediction = {
+        ...mlPrediction,
+        riskLevel: improvementRate > 0.1 ? 'low' : 'medium',
+        riskProbabilities: {
+          high: 0.1,
+          medium: improvementRate > 0.1 ? 0.3 : 0.6,
+          low: improvementRate > 0.1 ? 0.6 : 0.3
         }
       }
     }
+    
+    // Note: The ML model's improvement_rate feature should naturally recognize improvements
+    // If the model isn't responding to improvements, it may need retraining with better data
+    // or the improvement_rate calculation may need adjustment
 
     return NextResponse.json({
       riskLevel: mlPrediction.riskLevel || 'medium',
