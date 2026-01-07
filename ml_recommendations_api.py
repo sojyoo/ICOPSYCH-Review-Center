@@ -42,29 +42,62 @@ def load_models():
     """Load the trained ML model, recommendation data, and optional survey priors."""
     global model, scaler, label_encoder, feature_cols, recommendations_data, topic_recommendations, survey_aggregates
     
+    import traceback
+    
+    # Check if files exist
+    model_file = 'bsp4a_leak_free_model.pkl'
+    recs_file = 'adaptive_review_recommendations_clean.csv'
+    topics_file = 'personalized_topic_recommendations.csv'
+    
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Checking for model files...")
+    print(f"  {model_file}: {'✅ EXISTS' if os.path.exists(model_file) else '❌ NOT FOUND'}")
+    print(f"  {recs_file}: {'✅ EXISTS' if os.path.exists(recs_file) else '❌ NOT FOUND'}")
+    print(f"  {topics_file}: {'✅ EXISTS' if os.path.exists(topics_file) else '❌ NOT FOUND'}")
+    
+    if not os.path.exists(model_file):
+        print(f"❌ ERROR: {model_file} not found in {os.getcwd()}")
+        print(f"   Files in current directory: {os.listdir('.')}")
+        return False
+    if not os.path.exists(recs_file):
+        print(f"❌ ERROR: {recs_file} not found")
+        return False
+    if not os.path.exists(topics_file):
+        print(f"❌ ERROR: {topics_file} not found")
+        return False
+    
     try:
         # Load the trained model artifact (dict)
-        artifact = joblib.load('bsp4a_leak_free_model.pkl')
+        print(f"Loading model from {model_file}...")
+        artifact = joblib.load(model_file)
         model = artifact.get("model")
         scaler = artifact.get("scaler")
         label_encoder = artifact.get("label_encoder")
         feature_cols = artifact.get("feature_cols")
         
+        if model is None or scaler is None or label_encoder is None or feature_cols is None:
+            print("❌ ERROR: Model artifact is missing required components")
+            return False
+        
         # Load recommendation data
-        recommendations_data = pd.read_csv('adaptive_review_recommendations_clean.csv')
-        topic_recommendations = pd.read_csv('personalized_topic_recommendations.csv')
+        print(f"Loading recommendations from {recs_file}...")
+        recommendations_data = pd.read_csv(recs_file)
+        print(f"Loading topic recommendations from {topics_file}...")
+        topic_recommendations = pd.read_csv(topics_file)
 
         # Optional survey aggregates for cold-start personalization
         survey_agg_path = 'survey_feature_aggregates.json'
         if os.path.exists(survey_agg_path):
             with open(survey_agg_path, 'r') as f:
                 survey_aggregates = json.load(f)
-            print("Loaded survey aggregates for personalization")
+            print("✅ Loaded survey aggregates for personalization")
         
-        print("Models loaded successfully!")
+        print("✅ Models loaded successfully!")
         return True
     except Exception as e:
-        print(f"Error loading models: {e}")
+        print(f"❌ Error loading models: {e}")
+        print(f"❌ Traceback:")
+        traceback.print_exc()
         return False
 
 def generate_recommendations(subject_scores, test_type='pre-test'):
@@ -556,18 +589,24 @@ def assess_risk():
         print(f"Error assessing risk: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+# Load models when module is imported (works with both direct execution and gunicorn)
+# This ensures models are loaded before the app starts serving requests
+print("Loading ML models...")
+if load_models():
+    print("✅ Models loaded successfully!")
+else:
+    print("⚠️ Failed to load models. API will run with fallback recommendations.")
+    print("⚠️ Check that these files exist in the working directory:")
+    print("   - bsp4a_leak_free_model.pkl")
+    print("   - adaptive_review_recommendations_clean.csv")
+    print("   - personalized_topic_recommendations.csv")
+
+# Use ASCII-only markers to avoid Unicode encode errors on Windows consoles
+print("[OK] Concept Mastery Tracking: Enabled")
+print("[OK] Spaced Repetition: Enabled")
+print("[OK] Early Intervention: Enabled")
+
 if __name__ == '__main__':
-    # Load models on startup
-    if load_models():
-        print("Starting ML Recommendations API...")
-    else:
-        print("Failed to load models. API will run with fallback recommendations.")
-
-    # Use ASCII-only markers to avoid Unicode encode errors on Windows consoles
-    print("[OK] Concept Mastery Tracking: Enabled")
-    print("[OK] Spaced Repetition: Enabled")
-    print("[OK] Early Intervention: Enabled")
-
     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
