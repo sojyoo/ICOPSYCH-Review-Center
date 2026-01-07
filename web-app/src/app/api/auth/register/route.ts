@@ -15,6 +15,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
+    // Validate name: no numbers or special characters
+    if (/[0-9]/.test(name)) {
+      return NextResponse.json({ error: "Name cannot contain numbers" }, { status: 400 })
+    }
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(name)) {
+      return NextResponse.json({ error: "Name cannot contain special characters" }, { status: 400 })
+    }
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {

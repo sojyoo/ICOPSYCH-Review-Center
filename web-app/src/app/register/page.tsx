@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [validationErrors, setValidationErrors] = useState({
+    name: '',
     email: '',
     password: '',
     studentNumber: ''
@@ -55,11 +56,33 @@ export default function RegisterPage() {
     return { valid: true, error: '' }
   }
 
+  // Name validation: no numbers or special characters
+  const validateName = (name: string): { valid: boolean; error: string } => {
+    if (!name.trim()) {
+      return { valid: false, error: 'Name is required' }
+    }
+    if (/[0-9]/.test(name)) {
+      return { valid: false, error: 'Name cannot contain numbers' }
+    }
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(name)) {
+      return { valid: false, error: 'Name cannot contain special characters' }
+    }
+    return { valid: true, error: '' }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-    setValidationErrors({ email: '', password: '', studentNumber: '' })
+    setValidationErrors({ name: '', email: '', password: '', studentNumber: '' })
+
+    // Validate name
+    const nameValidation = validateName(formData.name)
+    if (!nameValidation.valid) {
+      setValidationErrors(prev => ({ ...prev, name: nameValidation.error }))
+      setLoading(false)
+      return
+    }
 
     // Validate email format
     if (!validateEmail(formData.email)) {
@@ -172,11 +195,29 @@ export default function RegisterPage() {
                 name="name"
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${
+                  validationErrors.name ? 'border-red-300' : 'border-gray-300'
+                }`}
                 placeholder="Enter your full name"
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => {
+                  setFormData({...formData, name: e.target.value})
+                  if (validationErrors.name) {
+                    setValidationErrors(prev => ({ ...prev, name: '' }))
+                  }
+                }}
+                onBlur={() => {
+                  if (formData.name && !validateName(formData.name).valid) {
+                    setValidationErrors(prev => ({ ...prev, name: validateName(formData.name).error }))
+                  }
+                }}
               />
+              {validationErrors.name && (
+                <p className="mt-1 text-xs text-red-600">{validationErrors.name}</p>
+              )}
+              {formData.name && !validationErrors.name && (
+                <p className="mt-1 text-xs text-gray-500">Name cannot contain numbers or special characters</p>
+              )}
             </div>
             
             {/* Email */}
@@ -202,8 +243,12 @@ export default function RegisterPage() {
                   }
                 }}
                 onBlur={() => {
-                  if (formData.email && !validateEmail(formData.email)) {
-                    setValidationErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }))
+                  if (formData.email) {
+                    if (!validateEmail(formData.email)) {
+                      setValidationErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }))
+                    } else {
+                      setValidationErrors(prev => ({ ...prev, email: '' }))
+                    }
                   }
                 }}
               />
@@ -241,8 +286,13 @@ export default function RegisterPage() {
                   }
                 }}
                 onBlur={() => {
-                  if (formData.studentNumber && !validateStudentNumber(formData.studentNumber).valid) {
-                    setValidationErrors(prev => ({ ...prev, studentNumber: validateStudentNumber(formData.studentNumber).error }))
+                  if (formData.studentNumber) {
+                    const validation = validateStudentNumber(formData.studentNumber)
+                    if (!validation.valid) {
+                      setValidationErrors(prev => ({ ...prev, studentNumber: validation.error }))
+                    } else {
+                      setValidationErrors(prev => ({ ...prev, studentNumber: '' }))
+                    }
                   }
                 }}
               />
