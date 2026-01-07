@@ -120,10 +120,15 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
         }
         console.log(`✅ Updated preferences.${category === 'activeLearning' ? 'habitActiveLearning' : category === 'planning' ? 'habitPlanning' : 'habitDiscipline'} = ${composite} (${compositePercent}%)`)
         
-        // Notify parent
-        if (onPreferencesChange) {
-          onPreferencesChange(updated)
-        }
+        // Notify parent immediately with updated preferences (including composite scores)
+        // Use setTimeout to ensure state is updated before notifying
+        setTimeout(() => {
+          if (onPreferencesChange) {
+            onPreferencesChange(updated)
+            console.log(`📢 Notified parent of ${category} composite update:`, updated)
+          }
+        }, 0)
+        
         return updated
       })
       

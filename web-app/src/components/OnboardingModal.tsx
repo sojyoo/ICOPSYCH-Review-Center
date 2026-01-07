@@ -42,12 +42,18 @@ export default function OnboardingModal({ onComplete, onSkip }: OnboardingModalP
   const handleNext = async () => {
     // Auto-save preferences before moving to next step
     if (step === 2 || step === 3) {
-      // Small delay to ensure any pending state updates are flushed
-      await new Promise(resolve => setTimeout(resolve, 50))
+      // Longer delay to ensure any pending state updates (especially composite score calculations) are flushed
+      await new Promise(resolve => setTimeout(resolve, 200))
       
       if (currentPreferencesRef.current) {
         try {
           console.log('💾 Auto-saving preferences on Next:', currentPreferencesRef.current)
+          console.log('💾 Composite scores in auto-save:', {
+            habitActiveLearning: currentPreferencesRef.current.habitActiveLearning,
+            habitPlanning: currentPreferencesRef.current.habitPlanning,
+            habitDiscipline: currentPreferencesRef.current.habitDiscipline,
+            habitConfidence: currentPreferencesRef.current.habitConfidence
+          })
           // Save the current preferences from the component
           const response = await fetch('/api/user/preferences', {
             method: 'PUT',
