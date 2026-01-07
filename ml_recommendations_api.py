@@ -503,7 +503,8 @@ def predict_risk_level():
         
         if model is None or scaler is None or label_encoder is None:
             # Fallback to rule-based risk level
-            overall_score = features_dict.get('overall_avg_score', 24.0)
+            # Use 25.0 as default (medium risk) instead of 24.0 (high risk) for new users
+            overall_score = features_dict.get('overall_avg_score', 25.0)
             if overall_score < 20:
                 risk_level = 'high'
                 risk_probabilities = {'high': 0.7, 'medium': 0.2, 'low': 0.1}
