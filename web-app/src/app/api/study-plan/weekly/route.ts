@@ -465,7 +465,8 @@ function generateDailyPlan(
     // Use user's specified availability
     for (let day = 0; day < 7; day++) {
       const dayKey = day.toString()
-      dayHours.push(parseFloat(dailyAvailability[dayKey]) || 0)
+      const hours = dailyAvailability[dayKey]
+      dayHours.push(typeof hours === 'number' ? hours : (parseFloat(String(hours)) || 0))
     }
   } else {
     // Distribute evenly, but skip Sunday
