@@ -9,6 +9,8 @@ export const dynamic = 'force-dynamic'
  * ML Prediction Endpoint
  * Calls the ML API to get risk level predictions based on user's feature vector
  * This aligns with Chapter 4 Section 4.6.2.A
+ * 
+ * Note: Feature vector contains only numeric values (no string fields)
  */
 export async function GET(request: NextRequest) {
   try {
