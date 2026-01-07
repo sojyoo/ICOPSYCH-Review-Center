@@ -22,15 +22,13 @@ import {
   Settings,
   HelpCircle,
   UserPlus,
-  RefreshCw,
-  AlertCircle
+  RefreshCw
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
 import DailyStudyDashboard from '@/components/DailyStudyDashboard'
 import UserPreferences from '@/components/UserPreferences'
 import OnboardingModal from '@/components/OnboardingModal'
 import ConceptReviewQueue from '@/components/ConceptReviewQueue'
-import AtRiskAlerts from '@/components/AtRiskAlerts'
 import StudySessionTracker from '@/components/StudySessionTracker'
 import RiskLevelCard from '@/components/RiskLevelCard'
 import FeatureDisplay from '@/components/FeatureDisplay'
@@ -163,7 +161,6 @@ export default function DashboardPage() {
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
     { id: "concept-review", label: "Review Queue", icon: RefreshCw },
-    { id: "alerts", label: "Alerts", icon: AlertCircle },
     { id: "preferences", label: "Preferences", icon: Settings },
     { id: "features", label: "ML Features", icon: Brain },
     { id: "help", label: "Help", icon: HelpCircle }
@@ -301,7 +298,6 @@ export default function DashboardPage() {
             {activeTab === 'daily-study' && <DailyStudyDashboard />}
             {activeTab === 'study-sessions' && <StudySessionTracker />}
             {activeTab === 'concept-review' && <ConceptReviewQueue />}
-            {activeTab === 'alerts' && <AtRiskAlerts />}
             {activeTab === 'preferences' && (
               <UserPreferences 
                 key="preferences"
