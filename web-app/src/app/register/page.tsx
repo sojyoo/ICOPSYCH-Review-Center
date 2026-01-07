@@ -266,60 +266,20 @@ export default function RegisterPage() {
                 name="studentNumber"
                 type="text"
                 required
-                // Allow an extra char so the browser doesn't block typing the final letter (e.g., "M")
-                // We'll normalize to the correct format in onChange.
-                maxLength={10}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase ${
                   validationErrors.studentNumber ? 'border-red-300' : 'border-gray-300'
                 }`}
-                placeholder="e.g. 225-0123M"
+                placeholder="Enter your student number"
                 value={formData.studentNumber}
                 onChange={(e) => {
-                  // Normalize to XXX-XXXXXM (3 digits + dash + 4 digits + 1 letter)
-                  // This approach is resilient even if the user types extra digits before the final letter.
-                  const raw = e.target.value.toUpperCase()
-                  const digits = raw.replace(/\D/g, '') // all digits
-                  const letters = raw.replace(/[^A-Z]/g, '') // all letters
-
-                  const partA = digits.slice(0, 3)
-                  const partB = digits.slice(3, 7)
-                  const suffix = letters.slice(-1) // last letter typed (e.g., M)
-
-                  let value = partA
-                  if (partA.length === 3) {
-                    value += '-' + partB
-                  } else if (digits.length > 3) {
-                    // If user is still typing, show dash once they exceed 3 digits
-                    value += '-' + partB
-                  }
-
-                  if (suffix) {
-                    value += suffix
-                  }
-
-                  // Clamp to 9 chars max (XXX-XXXXXM)
-                  value = value.slice(0, 9)
-                  
-                  setFormData({...formData, studentNumber: value})
+                  setFormData({...formData, studentNumber: e.target.value.toUpperCase()})
                   if (validationErrors.studentNumber) {
                     setValidationErrors(prev => ({ ...prev, studentNumber: '' }))
                   }
                 }}
-                onBlur={() => {
-                  if (formData.studentNumber) {
-                    const validation = validateStudentNumber(formData.studentNumber)
-                    if (!validation.valid) {
-                      setValidationErrors(prev => ({ ...prev, studentNumber: validation.error }))
-                    } else {
-                      setValidationErrors(prev => ({ ...prev, studentNumber: '' }))
-                    }
-                  }
-                }}
               />
-              {validationErrors.studentNumber ? (
+              {validationErrors.studentNumber && (
                 <p className="mt-1 text-xs text-red-600">{validationErrors.studentNumber}</p>
-              ) : (
-                <p className="mt-1 text-xs text-gray-500">Format: XXX-XXXXXM (e.g., 225-0123M)</p>
               )}
             </div>
             
