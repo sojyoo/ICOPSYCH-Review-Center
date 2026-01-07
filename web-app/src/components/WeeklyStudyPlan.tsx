@@ -202,7 +202,7 @@ export default function WeeklyStudyPlanComponent() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div className="bg-white/20 rounded-lg p-4">
-            <div className="text-3xl font-bold">{plan.recommendedHours}h</div>
+            <div className="text-4xl font-bold">{plan.recommendedHours}h</div>
             <div className="text-sm text-indigo-100">Recommended Study Time</div>
             {plan.recommendationIntensity && (
               <div className="text-xs text-indigo-200 mt-1">{plan.recommendationIntensity}</div>
@@ -342,8 +342,8 @@ export default function WeeklyStudyPlanComponent() {
                     {new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <Clock className="h-4 w-4 mr-1" />
+                <div className="flex items-center text-lg font-bold text-indigo-600">
+                  <Clock className="h-5 w-5 mr-2" />
                   {day.totalHours.toFixed(1)}h
                 </div>
               </div>
@@ -363,10 +363,10 @@ export default function WeeklyStudyPlanComponent() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-medium text-gray-700">
+                        <div className="text-lg font-bold text-gray-900">
                           {slot.startTime} - {slot.endTime}
                         </div>
-                        <div className="text-xs text-gray-500">{slot.duration} min</div>
+                        <div className="text-sm text-gray-600 font-medium">{slot.duration} min</div>
                       </div>
                     </div>
                     <p className="text-sm text-gray-700">{slot.description}</p>
@@ -388,10 +388,10 @@ export default function WeeklyStudyPlanComponent() {
                       </div>
                       <button
                         onClick={() => handleLogFromActivity(slot, day)}
-                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors flex items-center"
+                        className="px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center shadow-sm"
                         title="Log study session for this activity"
                       >
-                        <Plus className="h-3 w-3 mr-1" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Log Session
                       </button>
                     </div>
@@ -427,10 +427,10 @@ export default function WeeklyStudyPlanComponent() {
               <div className="text-sm text-gray-600">Study Days</div>
             </div>
             <div className="p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-3xl font-bold text-green-600">
                 {plan.dailyPlan.reduce((sum, d) => sum + d.totalHours, 0).toFixed(1)}h
               </div>
-              <div className="text-sm text-gray-600">Total Planned</div>
+              <div className="text-base font-medium text-gray-700">Total Planned</div>
             </div>
           </div>
         </div>
