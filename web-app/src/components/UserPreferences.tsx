@@ -66,6 +66,44 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
     }
   })
   
+  // Helper to get label from value
+  const getLabelFromValue = (value: number): string => {
+    if (value === 0) return 'Never'
+    if (value <= 0.33) return 'Sometimes'
+    if (value <= 0.67) return 'Often'
+    return 'Always'
+  }
+  
+  // Helper to get value from label
+  const getValueFromLabel = (label: string): number => {
+    switch (label) {
+      case 'Never': return 0
+      case 'Sometimes': return 0.33
+      case 'Often': return 0.67
+      case 'Always': return 1
+      default: return 0
+    }
+  }
+  
+  // Helper to get confidence label from value
+  const getConfidenceLabel = (value: number | null): string => {
+    if (value === null || value === 0) return 'Not Confident'
+    if (value <= 0.33) return 'Somewhat Confident'
+    if (value <= 0.67) return 'Confident'
+    return 'Very Confident'
+  }
+  
+  // Helper to get confidence value from label
+  const getConfidenceValue = (label: string): number => {
+    switch (label) {
+      case 'Not Confident': return 0
+      case 'Somewhat Confident': return 0.33
+      case 'Confident': return 0.67
+      case 'Very Confident': return 1
+      default: return 0
+    }
+  }
+  
   // If showOnlyTab is set, lock the active tab
   useEffect(() => {
     if (showOnlyTab) {
@@ -677,34 +715,28 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                     return (
                       <div key={item.key} className="flex items-center justify-between p-3 bg-white rounded border">
                         <label className="text-sm text-gray-700 flex-1">{item.label}</label>
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.33"
-                            value={value}
-                            onChange={(e) => {
-                              updateHabitItem('activeLearning', item.key, parseFloat(e.target.value))
-                            }}
-                            className="w-32"
-                          />
-                          <span className="text-sm font-semibold text-indigo-600 w-20 text-right">
-                            {value === 0 ? 'Never' : value <= 0.33 ? 'Sometimes' : value <= 0.67 ? 'Often' : 'Always'}
-                          </span>
-                        </div>
+                        <select
+                          value={getLabelFromValue(value)}
+                          onChange={(e) => {
+                            const newValue = getValueFromLabel(e.target.value)
+                            updateHabitItem('activeLearning', item.key, newValue)
+                          }}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-indigo-600 focus:ring-indigo-500 focus:border-indigo-500 min-w-[120px]"
+                        >
+                          <option value="Never">Never</option>
+                          <option value="Sometimes">Sometimes</option>
+                          <option value="Often">Often</option>
+                          <option value="Always">Always</option>
+                        </select>
                       </div>
                     )
                   })}
                 </div>
                 <div className="mt-3 pt-3 border-t border-indigo-200">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Active Learning Score (Average):</span>
+                    <span className="text-sm font-medium text-gray-700">Active Learning Score:</span>
                     <span className="text-lg font-bold text-indigo-600">
-                      {(() => {
-                        const percent = Math.round((preferences.habitActiveLearning || 0) * 100)
-                        return percent >= 99 ? 100 : percent
-                      })()}%
+                      {getLabelFromValue(preferences.habitActiveLearning || 0)}
                     </span>
                   </div>
                 </div>
@@ -728,32 +760,28 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                     return (
                       <div key={item.key} className="flex items-center justify-between p-3 bg-white rounded border">
                         <label className="text-sm text-gray-700 flex-1">{item.label}</label>
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.33"
-                            value={value}
-                            onChange={(e) => updateHabitItem('planning', item.key, parseFloat(e.target.value))}
-                            className="w-32"
-                          />
-                          <span className="text-sm font-semibold text-purple-600 w-20 text-right">
-                            {value === 0 ? 'Never' : value <= 0.33 ? 'Sometimes' : value <= 0.67 ? 'Often' : 'Always'}
-                          </span>
-                        </div>
+                        <select
+                          value={getLabelFromValue(value)}
+                          onChange={(e) => {
+                            const newValue = getValueFromLabel(e.target.value)
+                            updateHabitItem('planning', item.key, newValue)
+                          }}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-purple-600 focus:ring-purple-500 focus:border-purple-500 min-w-[120px]"
+                        >
+                          <option value="Never">Never</option>
+                          <option value="Sometimes">Sometimes</option>
+                          <option value="Often">Often</option>
+                          <option value="Always">Always</option>
+                        </select>
                       </div>
                     )
                   })}
                 </div>
                 <div className="mt-3 pt-3 border-t border-purple-200">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Planning Score (Average):</span>
+                    <span className="text-sm font-medium text-gray-700">Planning Score:</span>
                     <span className="text-lg font-bold text-purple-600">
-                      {(() => {
-                        const percent = Math.round((preferences.habitPlanning || 0) * 100)
-                        return percent >= 99 ? 100 : percent
-                      })()}%
+                      {getLabelFromValue(preferences.habitPlanning || 0)}
                     </span>
                   </div>
                 </div>
@@ -777,32 +805,28 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                     return (
                       <div key={item.key} className="flex items-center justify-between p-3 bg-white rounded border">
                         <label className="text-sm text-gray-700 flex-1">{item.label}</label>
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="range"
-                            min="0"
-                            max="1"
-                            step="0.33"
-                            value={value}
-                            onChange={(e) => updateHabitItem('discipline', item.key, parseFloat(e.target.value))}
-                            className="w-32"
-                          />
-                          <span className="text-sm font-semibold text-green-600 w-20 text-right">
-                            {value === 0 ? 'Never' : value <= 0.33 ? 'Sometimes' : value <= 0.67 ? 'Often' : 'Always'}
-                          </span>
-                        </div>
+                        <select
+                          value={getLabelFromValue(value)}
+                          onChange={(e) => {
+                            const newValue = getValueFromLabel(e.target.value)
+                            updateHabitItem('discipline', item.key, newValue)
+                          }}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-green-600 focus:ring-green-500 focus:border-green-500 min-w-[120px]"
+                        >
+                          <option value="Never">Never</option>
+                          <option value="Sometimes">Sometimes</option>
+                          <option value="Often">Often</option>
+                          <option value="Always">Always</option>
+                        </select>
                       </div>
                     )
                   })}
                 </div>
                 <div className="mt-3 pt-3 border-t border-green-200">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Discipline Score (Average):</span>
+                    <span className="text-sm font-medium text-gray-700">Discipline Score:</span>
                     <span className="text-lg font-bold text-green-600">
-                      {(() => {
-                        const percent = Math.round((preferences.habitDiscipline || 0) * 100)
-                        return percent >= 99 ? 100 : percent
-                      })()}%
+                      {getLabelFromValue(preferences.habitDiscipline || 0)}
                     </span>
                   </div>
                 </div>
@@ -821,36 +845,26 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                     <label className="text-sm text-gray-700 flex-1">
                       I am confident I will pass the licensure examination
                     </label>
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.33"
-                        value={preferences.habitConfidence || 0}
-                        onChange={(e) => updateHabit('habitConfidence', parseFloat(e.target.value))}
-                        className="w-32"
-                      />
-                      <span className="text-sm font-semibold text-yellow-600 w-20 text-right">
-                        {preferences.habitConfidence === null || preferences.habitConfidence === 0 
-                          ? 'Not Confident' 
-                          : preferences.habitConfidence <= 0.33 
-                          ? 'Somewhat Confident' 
-                          : preferences.habitConfidence <= 0.67 
-                          ? 'Confident' 
-                          : 'Very Confident'}
-                      </span>
-                    </div>
+                    <select
+                      value={getConfidenceLabel(preferences.habitConfidence)}
+                      onChange={(e) => {
+                        const newValue = getConfidenceValue(e.target.value)
+                        updateHabit('habitConfidence', newValue)
+                      }}
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-yellow-600 focus:ring-yellow-500 focus:border-yellow-500 min-w-[150px]"
+                    >
+                      <option value="Not Confident">Not Confident</option>
+                      <option value="Somewhat Confident">Somewhat Confident</option>
+                      <option value="Confident">Confident</option>
+                      <option value="Very Confident">Very Confident</option>
+                    </select>
                   </div>
                 </div>
                 <div className="mt-3 pt-3 border-t border-yellow-200">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Confidence Score:</span>
                     <span className="text-lg font-bold text-yellow-600">
-                      {(() => {
-                        const percent = Math.round((preferences.habitConfidence || 0) * 100)
-                        return percent >= 99 ? 100 : percent
-                      })()}%
+                      {getConfidenceLabel(preferences.habitConfidence)}
                     </span>
                   </div>
                 </div>
