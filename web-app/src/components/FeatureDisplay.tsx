@@ -252,8 +252,7 @@ export default function FeatureDisplay() {
             <p className="font-medium mb-1">About Feature Engineering</p>
             <p>
               These 20 features are calculated from your test scores, preferences, and performance patterns. 
-              They are sent to the ML model (Random Forest) to generate risk level predictions and personalized recommendations. 
-              This aligns with Chapter 4 Section 4.1 of the thesis.
+              They are sent to the ML model (Random Forest) to generate risk level predictions and personalized recommendations.
             </p>
           </div>
         </div>
