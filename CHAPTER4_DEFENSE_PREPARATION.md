@@ -6,11 +6,12 @@
 ## Table of Contents
 1. [Data Sources and Collection](#data-sources-and-collection)
 2. [Tools and Technologies Used](#tools-and-technologies-used)
-3. [Data Processing Pipeline](#data-processing-pipeline)
-4. [Model Training Process](#model-training-process)
-5. [Figure Generation](#figure-generation)
-6. [Potential Defense Questions](#potential-defense-questions)
-7. [Pre-Defense Checklist](#pre-defense-checklist)
+3. [Feature Relevance and System Implementation](#feature-relevance-and-system-implementation)
+4. [Data Processing Pipeline](#data-processing-pipeline)
+5. [Model Training Process](#model-training-process)
+6. [Figure Generation](#figure-generation)
+7. [Potential Defense Questions](#potential-defense-questions)
+8. [Pre-Defense Checklist](#pre-defense-checklist)
 
 ---
 
