@@ -257,6 +257,11 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
           // Set habit items only if user hasn't interacted
           setHabitItems(newHabitItems)
           console.log('📥 Initialized habitItems from composite scores (first load):', newHabitItems)
+          console.log('📊 Slider positions initialized to:', {
+            activeLearning: `${(activeLearningValue * 100).toFixed(0)}%`,
+            planning: `${(planningValue * 100).toFixed(0)}%`,
+            discipline: `${(disciplineValue * 100).toFixed(0)}%`
+          })
         } else {
           console.log('📥 Skipping habitItems reset - user has already interacted with sliders')
         }
@@ -266,12 +271,6 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
         hasLoadedOnce.current = true // Mark that we've loaded preferences
         
         console.log('✅ Set preferences state:', prefs)
-        console.log('📊 Initialized habit items from saved values:', newHabitItems)
-        console.log('📊 Slider positions should be:', {
-          activeLearning: `${(activeLearningValue * 100).toFixed(0)}%`,
-          planning: `${(planningValue * 100).toFixed(0)}%`,
-          discipline: `${(disciplineValue * 100).toFixed(0)}%`
-        })
         
         // Notify parent of preferences change AFTER state is set
         // Use setTimeout to ensure state updates are flushed
