@@ -736,7 +736,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Active Learning Score:</span>
                     <span className="text-lg font-bold text-indigo-600">
-                      {getLabelFromValue(preferences.habitActiveLearning || 0)}
+                      {Math.round((preferences.habitActiveLearning || 0) * 100)}%
                     </span>
                   </div>
                 </div>
@@ -781,7 +781,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Planning Score:</span>
                     <span className="text-lg font-bold text-purple-600">
-                      {getLabelFromValue(preferences.habitPlanning || 0)}
+                      {Math.round((preferences.habitPlanning || 0) * 100)}%
                     </span>
                   </div>
                 </div>
@@ -826,7 +826,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Discipline Score:</span>
                     <span className="text-lg font-bold text-green-600">
-                      {getLabelFromValue(preferences.habitDiscipline || 0)}
+                      {Math.round((preferences.habitDiscipline || 0) * 100)}%
                     </span>
                   </div>
                 </div>
@@ -864,7 +864,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-gray-700">Confidence Score:</span>
                     <span className="text-lg font-bold text-yellow-600">
-                      {getConfidenceLabel(preferences.habitConfidence)}
+                      {Math.round((preferences.habitConfidence || 0) * 100)}%
                     </span>
                   </div>
                 </div>
