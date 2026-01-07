@@ -253,6 +253,22 @@ export default function DashboardPage() {
             <nav className="space-y-2">
               {menuItems.map((item) => {
                 const Icon = item.icon
+                // Calendar tab redirects to full calendar page
+                if (item.id === 'calendar') {
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        router.push('/calendar')
+                        setMobileMenuOpen(false)
+                      }}
+                      className="w-full flex items-center px-3 py-3 sm:py-2 text-sm font-medium rounded-md transition-colors text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    >
+                      <Icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                      {item.label}
+                    </button>
+                  )
+                }
                 return (
                   <button
                     key={item.id}
@@ -287,7 +303,6 @@ export default function DashboardPage() {
             {activeTab === 'schedule' && <ScheduleContent currentWeek={currentWeek} userStats={userStats} />}
             {activeTab === 'progress' && <ProgressContent userStats={userStats} />}
             {activeTab === 'study-plan' && <StudyPlanContent recommendations={recommendations} />}
-            {activeTab === 'calendar' && <CalendarContent currentWeek={currentWeek} />}
             {activeTab === 'daily-study' && <DailyStudyDashboard />}
             {activeTab === 'study-sessions' && <StudySessionTracker />}
             {activeTab === 'preferences' && (
