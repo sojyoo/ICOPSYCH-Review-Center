@@ -161,13 +161,14 @@ async function calculateFeatureVector(testAttempts: any[], preferences: any) {
   const features: Record<string, number> = {}
 
   if (testAttempts.length === 0) {
-    // Cold-start: return default values
+    // Cold-start: return neutral default values (medium risk, not high)
+    // Use 25.0 (out of 30) = 83.3% which represents "unknown/new user" state
     return {
-      abnormal_psych_score: 24.0,
-      developmental_psych_score: 24.0,
-      industrial_psych_score: 24.0,
-      psychological_assessment_score: 24.0,
-      overall_avg_score: 24.0,
+      abnormal_psych_score: 25.0,
+      developmental_psych_score: 25.0,
+      industrial_psych_score: 25.0,
+      psychological_assessment_score: 25.0,
+      overall_avg_score: 25.0,
       score_consistency: 0.08,
       improvement_rate: 0.0,
       total_tests_taken: 0,

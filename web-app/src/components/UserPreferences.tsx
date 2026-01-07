@@ -86,7 +86,9 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
   
   // Update individual habit item and recalculate composite
   const updateHabitItem = (category: 'activeLearning' | 'planning' | 'discipline', itemKey: string, value: number) => {
-    console.log(`🎚️ Updating ${category}.${itemKey} to ${value}`)
+    console.log(`🎚️ Updating ${category}.${itemKey} to ${value} (${Math.round(value * 100)}%)`)
+    
+    // Use functional update to ensure we have the latest state
     setHabitItems(prevItems => {
       const newItems = {
         ...prevItems,
@@ -97,18 +99,33 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
       }
       
       // Calculate and update composite score immediately
-      const items = Object.values(newItems[category])
+      const items = Object.values(newItems[category]) as number[]
       const composite = calculateComposite(items)
-      console.log(`📊 Calculated composite for ${category}: ${composite} (from items: ${items.join(', ')})`)
+      const compositePercent = Math.round(composite * 100)
+      console.log(`📊 Calculated composite for ${category}: ${composite} (${compositePercent}%) from items: [${items.map(v => Math.round(v * 100)).join('%, ')}%]`)
       
-      // Update preferences immediately with the new composite
-      if (category === 'activeLearning') {
-        updateHabit('habitActiveLearning', composite)
-      } else if (category === 'planning') {
-        updateHabit('habitPlanning', composite)
-      } else if (category === 'discipline') {
-        updateHabit('habitDiscipline', composite)
-      }
+      // Update preferences immediately with the new composite using setPreferences callback
+      setPreferences(prevPrefs => {
+        if (!prevPrefs) {
+          console.warn(`⚠️ Cannot update ${category} composite: preferences is null`)
+          return prevPrefs
+        }
+        const updated = { ...prevPrefs }
+        if (category === 'activeLearning') {
+          updated.habitActiveLearning = composite
+        } else if (category === 'planning') {
+          updated.habitPlanning = composite
+        } else if (category === 'discipline') {
+          updated.habitDiscipline = composite
+        }
+        console.log(`✅ Updated preferences.${category === 'activeLearning' ? 'habitActiveLearning' : category === 'planning' ? 'habitPlanning' : 'habitDiscipline'} = ${composite} (${compositePercent}%)`)
+        
+        // Notify parent
+        if (onPreferencesChange) {
+          onPreferencesChange(updated)
+        }
+        return updated
+      })
       
       return newItems
     })
@@ -370,14 +387,17 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
   }
 
   const updateHabit = (habit: keyof UserPreferences, value: number) => {
-    if (!preferences) return
+    if (!preferences) {
+      console.warn(`⚠️ Cannot update ${habit}: preferences is null`)
+      return
+    }
     const updated = { ...preferences, [habit]: value }
     setPreferences(updated)
     // Notify parent of preferences change immediately (synchronously)
     if (onPreferencesChange) {
       onPreferencesChange(updated)
     }
-    console.log(`📝 Updated ${habit} to ${value}, notified parent`)
+    console.log(`📝 Updated ${habit} to ${value} (${Math.round(value * 100)}%), preferences state updated`)
   }
 
 
