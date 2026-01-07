@@ -164,8 +164,8 @@ async function generateWeeklyStudyPlan(userId: string, weekNumber: number, reque
   // Calculate recommended hours based on preferences or performance
   // Logic: If Total Available > Goal: allocate up to Goal. If Total Available < Goal: warn and use Available.
   let recommendedHours: number
-  const totalAvailableHours = dailyAvailability 
-    ? Object.values(dailyAvailability).reduce((sum: number, hours: any) => sum + (parseFloat(hours) || 0), 0)
+  const totalAvailableHours: number = dailyAvailability 
+    ? Object.values(dailyAvailability).reduce((sum: number, hours: any) => sum + (parseFloat(String(hours)) || 0), 0)
     : 0
   
   if (dailyAvailability && totalAvailableHours > 0) {
