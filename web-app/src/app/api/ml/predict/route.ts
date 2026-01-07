@@ -36,11 +36,18 @@ export async function GET(request: NextRequest) {
     const featureVector = await calculateFeatureVector(testAttempts, preferences)
 
     // Call ML API (Chapter 4 Section 4.6.2.A)
-    // Base URL: https://ml-recommendations-api.onrender.com
-    // Endpoint: /api/predict (defined in ml_recommendations_api.py)
-    const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
-    const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
-    const mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+    // Supports both ML_API_URL (full URL) and ML_API_BASE_URL + ML_API_ENDPOINT
+    let mlApiUrl: string
+    if (process.env.ML_API_URL) {
+      // If ML_API_URL is provided, use it directly (but ensure it points to /api/predict)
+      const baseUrl = process.env.ML_API_URL.replace(/\/recommendations$/, '').replace(/\/$/, '')
+      mlApiUrl = `${baseUrl}/api/predict`
+    } else {
+      // Fallback to separate base URL and endpoint
+      const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
+      const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
+      mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+    }
     const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 5000)
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeoutDuration)

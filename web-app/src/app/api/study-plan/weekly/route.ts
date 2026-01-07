@@ -102,7 +102,21 @@ async function generateWeeklyStudyPlan(userId: string, weekNumber: number, reque
   // Get ML recommendations
   let mlRecommendations: any = null
   try {
-    const mlApiUrl = process.env.ML_API_URL || 'http://localhost:5000/recommendations'
+    // For /recommendations endpoint, use ML_API_URL if provided, otherwise construct from base
+    let mlApiUrl: string
+    if (process.env.ML_API_URL) {
+      // If ML_API_URL already points to /recommendations, use it as-is
+      // Otherwise, append /recommendations to the base URL
+      if (process.env.ML_API_URL.includes('/recommendations')) {
+        mlApiUrl = process.env.ML_API_URL
+      } else {
+        const baseUrl = process.env.ML_API_URL.replace(/\/$/, '')
+        mlApiUrl = `${baseUrl}/recommendations`
+      }
+    } else {
+      const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
+      mlApiUrl = `${mlApiBaseUrl}/recommendations`
+    }
     if (testAttempts.length > 0) {
       const mostRecent = testAttempts[0]
       if (mostRecent.subjectScores) {
@@ -208,11 +222,18 @@ async function generateWeeklyStudyPlan(userId: string, weekNumber: number, reque
     })
     
     if (testAttemptsForML.length > 0) {
-      // Base URL: https://ml-recommendations-api.onrender.com
-      // Endpoint: /api/predict (defined in ml_recommendations_api.py)
-      const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
-      const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
-      const mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+      // Supports both ML_API_URL (full URL) and ML_API_BASE_URL + ML_API_ENDPOINT
+      let mlApiUrl: string
+      if (process.env.ML_API_URL) {
+        // If ML_API_URL is provided, use it directly (but ensure it points to /api/predict)
+        const baseUrl = process.env.ML_API_URL.replace(/\/recommendations$/, '').replace(/\/$/, '')
+        mlApiUrl = `${baseUrl}/api/predict`
+      } else {
+        // Fallback to separate base URL and endpoint
+        const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
+        const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
+        mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+      }
       const featureVector = await calculateFeatureVectorForML(testAttemptsForML, preferencesForML)
       
       try {
