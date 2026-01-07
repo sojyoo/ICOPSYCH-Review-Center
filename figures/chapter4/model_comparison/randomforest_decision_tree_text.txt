@@ -1,0 +1,11 @@
+Decision Tree 83 from Random Forest
+Depth: 2
+================================================================================
+
+|--- industrial_psych_score <= 0.35
+|   |--- overall_avg_score <= -0.34
+|   |   |--- class: high_risk
+|   |--- overall_avg_score >  -0.34
+|   |   |--- class: low_risk
+|--- industrial_psych_score >  0.35
+|   |--- class: medium_risk

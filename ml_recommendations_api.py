@@ -24,8 +24,14 @@ CORS(app)
 
 # Load the trained model and data
 model = None
+scaler = None
+label_encoder = None
+feature_cols = None
 recommendations_data = None
 topic_recommendations = None
+
+# Optional survey priors for personalization
+survey_aggregates = None
 
 # Initialize new ML components
 concept_tracker = ConceptMasteryTracker()
@@ -33,16 +39,27 @@ spaced_repetition = SpacedRepetitionScheduler()
 early_intervention = EarlyInterventionDetector()
 
 def load_models():
-    """Load the trained ML model and recommendation data"""
-    global model, recommendations_data, topic_recommendations
+    """Load the trained ML model, recommendation data, and optional survey priors."""
+    global model, scaler, label_encoder, feature_cols, recommendations_data, topic_recommendations, survey_aggregates
     
     try:
-        # Load the trained model
-        model = joblib.load('bsp4a_leak_free_model.pkl')
+        # Load the trained model artifact (dict)
+        artifact = joblib.load('bsp4a_leak_free_model.pkl')
+        model = artifact.get("model")
+        scaler = artifact.get("scaler")
+        label_encoder = artifact.get("label_encoder")
+        feature_cols = artifact.get("feature_cols")
         
         # Load recommendation data
         recommendations_data = pd.read_csv('adaptive_review_recommendations_clean.csv')
         topic_recommendations = pd.read_csv('personalized_topic_recommendations.csv')
+
+        # Optional survey aggregates for cold-start personalization
+        survey_agg_path = 'survey_feature_aggregates.json'
+        if os.path.exists(survey_agg_path):
+            with open(survey_agg_path, 'r') as f:
+                survey_aggregates = json.load(f)
+            print("Loaded survey aggregates for personalization")
         
         print("Models loaded successfully!")
         return True
@@ -53,24 +70,31 @@ def load_models():
 def generate_recommendations(subject_scores, test_type='pre-test'):
     """Generate personalized recommendations based on subject scores"""
     
-    if model is None or recommendations_data is None:
+    if model is None or recommendations_data is None or feature_cols is None:
         return generate_fallback_recommendations(subject_scores)
     
     try:
-        # Prepare features for the model
-        features = []
-        subjects = ['Abnormal Psychology', 'Developmental Psychology', 'Industrial Psychology', 'Psychological Assessment']
-        
-        for subject in subjects:
-            score = subject_scores.get(subject, {}).get('percentage', 0)
-            features.append(score)
-        
-        # Add test type feature (0 for pre-test, 1 for post-test)
-        test_type_encoded = 1 if test_type == 'post-test' else 0
-        features.append(test_type_encoded)
-        
-        # Make prediction
-        features_array = np.array(features).reshape(1, -1)
+        # Prepare features aligned with training
+        def get_feat(col):
+            if col == "abnormal_psych_score":
+                return subject_scores.get('Abnormal Psychology', {}).get('percentage', 0)
+            if col == "developmental_psych_score":
+                return subject_scores.get('Developmental Psychology', {}).get('percentage', 0)
+            if col == "industrial_psych_score":
+                return subject_scores.get('Industrial Psychology', {}).get('percentage', 0)
+            if col == "psychological_assessment_score":
+                return subject_scores.get('Psychological Assessment', {}).get('percentage', 0)
+            if col == "test_type":
+                return 1 if test_type == 'post-test' else 0
+            # Defaults for other global features (not supplied by API); keep at 0
+            return 0
+
+        features = [get_feat(col) for col in feature_cols]
+        features_array = np.array(features, dtype=float).reshape(1, -1)
+
+        if scaler is not None:
+            features_array = scaler.transform(features_array)
+
         prediction = model.predict(features_array)[0]
         
         # Generate recommendations based on prediction
@@ -156,6 +180,49 @@ def generate_recommendations(subject_scores, test_type='pre-test'):
         print(f"Error generating recommendations: {e}")
         return generate_fallback_recommendations(subject_scores)
 
+
+def apply_survey_personalization(recommendations: dict, survey_features: dict):
+    """
+    Lightly adjust recommendations based on survey-derived preferences/habits.
+    Expects survey_features keys consistent with survey_features.py outputs.
+    """
+    if not survey_features or not isinstance(recommendations, dict):
+        return recommendations
+
+    def get(key, default=None):
+        return survey_features.get(key, default)
+
+    # Adjust study hours based on planning/discipline
+    planning = get("planning_score")
+    discipline = get("discipline_score")
+    if planning is not None and planning < 0.4:
+        recommendations["totalStudyHours"] = recommendations.get("totalStudyHours", 0) + 4
+        recommendations.setdefault("nextSteps", []).append("Use a structured weekly schedule based on your survey responses.")
+    if discipline is not None and discipline < 0.4:
+        recommendations.setdefault("nextSteps", []).append("Keep sessions short (25-40 mins) to build consistency.")
+
+    # Collaboration preference
+    if get("pref_group") == 1:
+        recommendations.setdefault("nextSteps", []).append("Join or form a small group review session this week.")
+
+    # Environment preference
+    env = get("environment_score")
+    if env is not None and env > 0.66:
+        recommendations.setdefault("nextSteps", []).append("Study in a quiet, low-distraction space for key topics.")
+
+    # Confidence low → encourage quick wins
+    conf = get("confidence_score")
+    if conf is not None and conf < 0.5:
+        recommendations.setdefault("nextSteps", []).append("Start with 2-3 short practice sets to build confidence.")
+
+    # Challenges: time or financial
+    if get("challenge_time") == 1:
+        recommendations.setdefault("nextSteps", []).append("Use 30-minute blocks; focus on highest-yield weak subjects first.")
+    if get("challenge_financial") == 1:
+        recommendations.setdefault("nextSteps", []).append("Use free materials first; prioritize provided practice sets.")
+
+    return recommendations
+
 def generate_fallback_recommendations(subject_scores):
     """Generate fallback recommendations when ML model is not available"""
     
@@ -228,9 +295,21 @@ def get_recommendations():
         
         subject_scores = data['subjectScores']
         test_type = data.get('testType', 'pre-test')
+        survey_features = data.get('surveyFeatures')  # optional payload from frontend
         
         recommendations = generate_recommendations(subject_scores, test_type)
-        
+
+        # Apply survey-based personalization if provided, else use cohort averages lightly
+        if survey_features:
+            recommendations = apply_survey_personalization(recommendations, survey_features)
+        elif survey_aggregates:
+            # Use cohort mean scores as a gentle nudge for cold-start
+            mean_planning = survey_aggregates.get('planning_score', {}).get('mean')
+            if mean_planning is not None:
+                recommendations = apply_survey_personalization(
+                    recommendations, {"planning_score": mean_planning}
+                )
+
         return jsonify(recommendations)
         
     except Exception as e:
@@ -372,6 +451,82 @@ def get_due_concepts():
         print(f"Error getting due concepts: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/api/predict', methods=['POST'])
+def predict_risk_level():
+    """Predict risk level using full 20-feature vector (for Next.js API integration)"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'features' not in data:
+            return jsonify({'error': 'Features vector is required'}), 400
+        
+        features_dict = data['features']
+        
+        # Convert feature dict to array in the correct order
+        if feature_cols is None:
+            return jsonify({'error': 'Model not loaded'}), 503
+        
+        features_array = np.array([features_dict.get(col, 0.0) for col in feature_cols], dtype=float).reshape(1, -1)
+        
+        if model is None or scaler is None or label_encoder is None:
+            # Fallback to rule-based risk level
+            overall_score = features_dict.get('overall_avg_score', 24.0)
+            if overall_score < 20:
+                risk_level = 'high'
+                risk_probabilities = {'high': 0.7, 'medium': 0.2, 'low': 0.1}
+            elif overall_score < 26:
+                risk_level = 'medium'
+                risk_probabilities = {'high': 0.2, 'medium': 0.7, 'low': 0.1}
+            else:
+                risk_level = 'low'
+                risk_probabilities = {'high': 0.1, 'medium': 0.2, 'low': 0.7}
+        else:
+            # Scale features
+            features_scaled = scaler.transform(features_array)
+            
+            # Predict risk level
+            prediction = model.predict(features_scaled)[0]
+            probabilities = model.predict_proba(features_scaled)[0]
+            
+            # Map prediction to risk level (assuming label_encoder maps: 0=low, 1=medium, 2=high)
+            risk_levels = ['low', 'medium', 'high']
+            risk_level = risk_levels[prediction]
+            
+            # Get probabilities for each risk level
+            risk_probabilities = {
+                'low': float(probabilities[0]),
+                'medium': float(probabilities[1]),
+                'high': float(probabilities[2])
+            }
+        
+        # Generate subject recommendations based on weakest subjects
+        subject_scores = {
+            'Abnormal Psychology': features_dict.get('abnormal_psych_score', 24.0),
+            'Developmental Psychology': features_dict.get('developmental_psych_score', 24.0),
+            'Industrial Psychology': features_dict.get('industrial_psych_score', 24.0),
+            'Psychological Assessment': features_dict.get('psychological_assessment_score', 24.0)
+        }
+        
+        # Find weakest subject
+        weakest_subject = min(subject_scores.items(), key=lambda x: x[1])[0]
+        strongest_subject = max(subject_scores.items(), key=lambda x: x[1])[0]
+        
+        subject_recommendations = [weakest_subject] if weakest_subject else []
+        topic_priorities = []
+        
+        return jsonify({
+            'riskLevel': risk_level,
+            'riskProbabilities': risk_probabilities,
+            'subjectRecommendations': subject_recommendations,
+            'topicPriorities': topic_priorities
+        })
+        
+    except Exception as e:
+        print(f"Error in /api/predict endpoint: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': 'Internal server error'}), 500
+
 @app.route('/early-intervention/assess', methods=['POST'])
 def assess_risk():
     """Assess student risk and generate early intervention recommendations"""
@@ -405,15 +560,14 @@ if __name__ == '__main__':
     # Load models on startup
     if load_models():
         print("Starting ML Recommendations API...")
-        print("✅ Concept Mastery Tracking: Enabled")
-        print("✅ Spaced Repetition: Enabled")
-        print("✅ Early Intervention: Enabled")
-        app.run(host='0.0.0.0', port=5000, debug=True)
     else:
         print("Failed to load models. API will run with fallback recommendations.")
-        print("✅ Concept Mastery Tracking: Enabled")
-        print("✅ Spaced Repetition: Enabled")
-        print("✅ Early Intervention: Enabled")
-        app.run(host='0.0.0.0', port=5000, debug=True)
+
+    # Use ASCII-only markers to avoid Unicode encode errors on Windows consoles
+    print("[OK] Concept Mastery Tracking: Enabled")
+    print("[OK] Spaced Repetition: Enabled")
+    print("[OK] Early Intervention: Enabled")
+
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 

@@ -1,18 +1,15 @@
 """
-Quick helper script to train a simple leak-free model and export it as
-`bsp4a_leak_free_model.pkl` for the ml_recommendations_api.py to load.
-
-This is intentionally lightweight for demo purposes: it uses the
-enhanced student features to train a RandomForestClassifier that
-predicts board exam risk levels.
+Quick helper script to train a leak-free model aligned with the
+features used at inference (subject percentages + meta) and export it as
+`bsp4a_leak_free_model.pkl` for ml_recommendations_api.py to load.
 """
 
+import os
+import joblib
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-import joblib
-import os
 
 
 def main():
@@ -21,22 +18,22 @@ def main():
     return
 
   df = pd.read_csv("enhanced_student_features.csv")
+  # Inject synthetic test_type (0 = pre/unknown) for training alignment with inference
+  df["test_type"] = 0
 
-  # Basic feature set similar to enhanced_ml_model.py
+  # Feature set aligned to inference: subject scores + a few global signals + test_type
   feature_cols = [
-    "overall_avg_score",
-    "overall_std",
-    "improvement_rate",
-    "score_consistency",
-    "improvement_consistency",
-    "study_hours_per_week",
-    "study_consistency",
     "abnormal_psych_score",
     "developmental_psych_score",
     "industrial_psych_score",
     "psychological_assessment_score",
+    "overall_avg_score",
+    "score_consistency",
+    "improvement_rate",
+    "study_hours_per_week",
     "total_tests_taken",
     "avg_tests_per_subject",
+    "test_type",  # synthetic: 0 pre/unknown, 1 post (kept for parity with API input)
   ]
 
   missing_cols = [c for c in feature_cols if c not in df.columns]
@@ -47,11 +44,18 @@ def main():
   X = df[feature_cols].copy()
   X = X.fillna(0)
 
-  if "board_exam_risk" not in df.columns:
-    print("Column 'board_exam_risk' not found in enhanced_student_features.csv")
-    return
+  # Derive a multi-class label from overall_avg_score using quantiles to avoid single-class issue
+  scores = df["overall_avg_score"].fillna(0)
+  q1, q2 = scores.quantile([0.33, 0.66])
 
-  y_raw = df["board_exam_risk"].fillna("high_risk")
+  def bucket(score):
+    if score <= q1:
+      return "high_risk"
+    if score <= q2:
+      return "medium_risk"
+    return "low_risk"
+
+  y_raw = scores.apply(bucket)
 
   le = LabelEncoder()
   y = le.fit_transform(y_raw)
@@ -63,7 +67,7 @@ def main():
     X_scaled, y, test_size=0.2, random_state=42, stratify=y
   )
 
-  clf = RandomForestClassifier(n_estimators=150, random_state=42)
+  clf = RandomForestClassifier(n_estimators=200, random_state=42, class_weight="balanced")
   clf.fit(X_train, y_train)
 
   train_acc = clf.score(X_train, y_train)

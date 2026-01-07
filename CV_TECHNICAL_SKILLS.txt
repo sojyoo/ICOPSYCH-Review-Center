@@ -1,0 +1,47 @@
+PROGRAMMING SKILLS & TECHNOLOGIES
+==================================
+
+Programming Languages
+---------------------
+TypeScript/JavaScript          Proficiency Level: 8
+Python                         Proficiency Level: 8
+SQL                            Proficiency Level: 6
+HTML/CSS                       Proficiency Level: 7
+
+Web Frameworks & Libraries
+---------------------------
+Next.js                        Proficiency Level: 8
+React                          Proficiency Level: 8
+Tailwind CSS                   Proficiency Level: 7
+NextAuth.js                    Proficiency Level: 6
+Flask                          Proficiency Level: 6
+
+Machine Learning & Data Science
+---------------------------------
+scikit-learn                   Proficiency Level: 7
+pandas                         Proficiency Level: 7
+NumPy                          Proficiency Level: 6
+matplotlib/seaborn            Proficiency Level: 6
+
+Database & ORM
+---------------
+PostgreSQL                     Proficiency Level: 7
+Prisma ORM                     Proficiency Level: 7
+
+Backend & API Development
+-------------------------
+REST API Design                Proficiency Level: 7
+Node.js                        Proficiency Level: 7
+API Integration                Proficiency Level: 7
+
+Data Formats & Processing
+--------------------------
+JSON                           Proficiency Level: 8
+Excel/CSV Processing           Proficiency Level: 6
+
+Deployment & DevOps
+--------------------
+Vercel                         Proficiency Level: 6
+Render                         Proficiency Level: 6
+Version Control (Git)          Proficiency Level: 7
+

@@ -15,6 +15,7 @@ interface StudyRecommendation {
   estimatedTime: number // in minutes
   difficulty: 'easy' | 'medium' | 'hard'
   resources?: string[]
+  mlPowered?: boolean // Indicates if recommendation came from ML model
 }
 
 export async function GET(request: NextRequest) {
@@ -27,7 +28,13 @@ export async function GET(request: NextRequest) {
 
     const recommendations = await generateStudyRecommendations(session.user.id)
     
-    return NextResponse.json({ recommendations })
+    // Check ML API status
+    const mlApiStatus = await checkMLAPIStatus()
+    
+    return NextResponse.json({ 
+      recommendations,
+      mlApiStatus 
+    })
 
   } catch (error) {
     console.error("Error generating study recommendations:", error)
@@ -58,14 +65,18 @@ async function generateStudyRecommendations(userId: string): Promise<StudyRecomm
     }
 
     // Try to use ML API first
+    let mlStatus = 'unavailable'
     try {
       const mlRecommendations = await getMLRecommendations(testAttempts)
       if (mlRecommendations && mlRecommendations.length > 0) {
         console.log('✅ Using ML model recommendations')
-        return mlRecommendations
+        mlStatus = 'available'
+        // Add status to each recommendation
+        return mlRecommendations.map(rec => ({ ...rec, mlPowered: true }))
       }
     } catch (mlError) {
       console.log('⚠️ ML API unavailable, falling back to rule-based recommendations:', mlError)
+      mlStatus = 'unavailable'
     }
 
     // Fallback to rule-based recommendations
@@ -81,13 +92,14 @@ async function generateStudyRecommendations(userId: string): Promise<StudyRecomm
     recommendations.push(...generateReviewRecommendations(testAttempts))
     recommendations.push(...generatePracticeRecommendations(difficultyAnalysis))
 
-    // Sort by priority and return top 8
+    // Sort by priority and return top 8, mark as rule-based
     return recommendations
       .sort((a, b) => {
         const priorityOrder = { high: 3, medium: 2, low: 1 }
         return priorityOrder[b.priority] - priorityOrder[a.priority]
       })
       .slice(0, 8)
+      .map(rec => ({ ...rec, mlPowered: false }))
 
   } catch (error) {
     console.error("Error analyzing user performance:", error)
@@ -112,18 +124,37 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
     mlSubjectScores[subject] = { percentage }
   })
 
-  // Call ML API - use environment variable or default to localhost for development
-  const mlApiUrl = process.env.ML_API_URL || 'http://localhost:5000/recommendations'
-  const response = await fetch(mlApiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      subjectScores: mlSubjectScores,
-      testType: mostRecentAttempt.testType || 'pre-test'
+  // Call ML API (Chapter 4 Section 4.6.2.A)
+  // Base URL: https://ml-recommendations-api.onrender.com
+  // Endpoint: /api/predict (defined in ml_recommendations_api.py)
+  const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
+  const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
+  const mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+  const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 4000)
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutDuration)
+
+  let response: Response
+  try {
+    response = await fetch(mlApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        subjectScores: mlSubjectScores,
+        testType: mostRecentAttempt.testType || 'pre-test'
+      }),
+      signal: controller.signal
     })
-  })
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`ML API request timed out after ${timeoutDuration}ms`)
+    }
+    throw error
+  } finally {
+    clearTimeout(timeoutId)
+  }
 
   if (!response.ok) {
     throw new Error(`ML API returned ${response.status}`)
@@ -393,6 +424,24 @@ function generatePracticeRecommendations(difficultyAnalysis: any): StudyRecommen
   })
   
   return recommendations
+}
+
+async function checkMLAPIStatus(): Promise<'available' | 'unavailable' | 'unknown'> {
+  try {
+    const mlApiUrl = process.env.ML_API_URL || 'http://localhost:5000/recommendations'
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 2000) // Quick health check
+    
+    const response = await fetch(`${mlApiUrl.replace('/recommendations', '')}/health`, {
+      method: 'GET',
+      signal: controller.signal
+    })
+    
+    clearTimeout(timeoutId)
+    return response.ok ? 'available' : 'unavailable'
+  } catch (error) {
+    return 'unavailable'
+  }
 }
 
 function getDefaultRecommendations(): StudyRecommendation[] {

@@ -1,0 +1,60 @@
+{
+  "accuracy": 1.0,
+  "report": {
+    "0": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 7.0
+    },
+    "1": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9.0
+    }
+  },
+  "n_train": 35,
+  "n_test": 9,
+  "features": [
+    "age",
+    "sessions_attended_num",
+    "pref_self_study",
+    "pref_group",
+    "pref_formal",
+    "attends_schedule_bool",
+    "planning_score",
+    "discipline_score",
+    "active_learning_score",
+    "environment_score",
+    "collaboration_score",
+    "feedback_score",
+    "confidence_score",
+    "gwa_psych_assessment_num",
+    "gwa_industrial_psych_num",
+    "gwa_developmental_psych_num",
+    "gwa_abnormal_psych_num",
+    "motivation_professional_advancement",
+    "motivation_family_expectations",
+    "motivation_personal_fulfillment",
+    "motivation_peer_influence",
+    "challenge_time",
+    "challenge_financial",
+    "challenge_resources",
+    "challenge_burnout",
+    "challenge_focus"
+  ]
+}

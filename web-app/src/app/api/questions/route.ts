@@ -83,6 +83,25 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       }
     }
     
+    // Filter by week if provided (for pre-test and post-test)
+    // Mock exams use all weeks, review weeks (13-15) can use multiple weeks
+    if (week > 0 && type !== 'mock-exam') {
+      if (week >= 13 && week <= 15) {
+        // Review weeks can use questions from all previous weeks
+        whereClause.week = {
+          lte: week
+        }
+      } else {
+        // Regular weeks: use questions from that specific week
+        whereClause.week = week
+      }
+    }
+    
+    // Filter by lecture if provided (optional, for more precise matching)
+    if (lecture > 0 && type !== 'mock-exam' && week < 13) {
+      whereClause.lecture = lecture
+    }
+    
     // Note: We'll use the same questions for both pre-test and post-test, but shuffle for post-tests
     // Mock exams will use all available questions
 

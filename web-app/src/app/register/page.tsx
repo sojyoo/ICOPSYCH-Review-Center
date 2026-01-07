@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { signIn, getSession } from 'next-auth/react'
 import { Eye, EyeOff } from 'lucide-react'
 
 export default function RegisterPage() {
@@ -43,8 +44,31 @@ export default function RegisterPage() {
       })
 
       if (response.ok) {
-        // Registration successful - redirect to login with success message
-        window.location.href = '/login?registered=true'
+        // Registration successful - auto-login and redirect to dashboard
+        try {
+          const result = await signIn('credentials', {
+            email: formData.email,
+            password: formData.password,
+            redirect: false,
+          })
+
+          if (result?.ok) {
+            // Get session to check user role
+            const session = await getSession()
+            if (session?.user?.role === 'admin') {
+              window.location.href = '/admin'
+            } else {
+              // Auto-login successful, redirect to dashboard (onboarding will show)
+              window.location.href = '/dashboard'
+            }
+          } else {
+            // Fallback to login page if auto-login fails
+            window.location.href = '/login?registered=true'
+          }
+        } catch (error) {
+          // Fallback to login page
+          window.location.href = '/login?registered=true'
+        }
       } else {
         const errorData = await response.json()
         setError(errorData.error || 'Registration failed')
@@ -123,7 +147,7 @@ export default function RegisterPage() {
                 type="text"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase"
-                placeholder="e.g. 2025-12345"
+                placeholder="e.g. 225-0123M"
                 value={formData.studentNumber}
                 onChange={(e) => setFormData({...formData, studentNumber: e.target.value.toUpperCase()})}
               />
@@ -198,11 +222,6 @@ export default function RegisterPage() {
               {formData.password && formData.confirmPassword && formData.password === formData.confirmPassword && (
                 <p className="mt-1 text-xs text-green-600">Passwords match</p>
               )}
-            </div>
-            
-            {/* Cohort Info */}
-            <div className="bg-indigo-50 border border-indigo-100 rounded-md px-3 py-2 text-sm text-indigo-700">
-              All new students are automatically enrolled in the ICOPSYCH 2025 cohort.
             </div>
 
             {/* Error Message */}

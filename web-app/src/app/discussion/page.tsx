@@ -16,6 +16,75 @@ import {
 } from 'lucide-react'
 import { getLectureContent, LectureContent } from '@/data/lectures'
 
+interface TopicOverview {
+  description: string
+  keyTopics: string[]
+  importantConcepts?: string[]
+}
+
+function getTopicOverview(subject: string, week: number): TopicOverview | null {
+  const overviews: Record<string, Record<number, TopicOverview>> = {
+    'Developmental Psychology': {
+      1: {
+        description: 'Developmental Psychology explores human growth and change across the lifespan, from conception to death. This foundational topic examines physical, cognitive, social, and emotional development through various theoretical lenses.',
+        keyTopics: [
+          'Piaget\'s Stages of Cognitive Development',
+          'Erikson\'s Psychosocial Development Theory',
+          'Attachment Theory and Early Development',
+          'Language Development Milestones',
+          'Moral Development (Kohlberg\'s Theory)',
+          'Adolescent Development and Identity Formation'
+        ],
+        importantConcepts: ['Sensorimotor Stage', 'Object Permanence', 'Secure Attachment', 'Zone of Proximal Development']
+      }
+    },
+    'Industrial Psychology': {
+      2: {
+        description: 'Industrial Psychology applies psychological principles to workplace settings, focusing on employee behavior, organizational effectiveness, and human resource management.',
+        keyTopics: [
+          'Job Analysis and Design',
+          'Employee Selection and Assessment',
+          'Training and Development',
+          'Performance Appraisal Systems',
+          'Work Motivation Theories',
+          'Organizational Culture and Climate'
+        ],
+        importantConcepts: ['Job Satisfaction', 'Organizational Commitment', 'Work-Life Balance', 'Leadership Styles']
+      }
+    },
+    'Abnormal Psychology': {
+      3: {
+        description: 'Abnormal Psychology examines psychological disorders, their causes, symptoms, and treatments. This field is essential for understanding mental health conditions and therapeutic interventions.',
+        keyTopics: [
+          'DSM-5 Classification System',
+          'Anxiety Disorders and Phobias',
+          'Mood Disorders (Depression, Bipolar)',
+          'Schizophrenia Spectrum Disorders',
+          'Personality Disorders',
+          'Trauma and Stressor-Related Disorders'
+        ],
+        importantConcepts: ['Diagnostic Criteria', 'Comorbidity', 'Etiology', 'Evidence-Based Treatment']
+      }
+    },
+    'Psychological Assessment': {
+      4: {
+        description: 'Psychological Assessment involves the systematic evaluation of psychological functioning using standardized tests, interviews, and observations to inform diagnosis and treatment planning.',
+        keyTopics: [
+          'Test Construction and Psychometrics',
+          'Reliability and Validity',
+          'Intelligence Testing (WAIS, WISC)',
+          'Personality Assessment (MMPI, Rorschach)',
+          'Neuropsychological Assessment',
+          'Clinical Interviewing Techniques'
+        ],
+        importantConcepts: ['Standardization', 'Norm-Referenced Tests', 'Clinical Judgment', 'Cultural Bias']
+      }
+    }
+  }
+
+  return overviews[subject]?.[week] || null
+}
+
 function DiscussionPageContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -247,32 +316,67 @@ function DiscussionPageContent() {
           )}
         </div>
 
-        {/* Subject-Specific Content */}
+        {/* Subject-Specific Topic Overviews */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <div className="flex items-center mb-4">
             <Brain className="h-6 w-6 text-purple-600 mr-2" />
-            <h3 className="text-lg font-semibold text-gray-900">Subject Focus: {subjects.join(', ') || 'TBD'}</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Topic Overviews: {subjects.join(', ') || 'TBD'}</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {subjects.map((subject, index) => (
-              <div key={index} className="p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-2">{subject}</h4>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <Target className="h-4 w-4 mr-2 text-indigo-500" />
-                    <span>Core concepts and theories</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-2 text-indigo-500" />
-                    <span>Historical development and current research</span>
-                  </div>
-                  <div className="flex items-center">
-                    <BookOpen className="h-4 w-4 mr-2 text-indigo-500" />
-                    <span>Practical applications and case studies</span>
-                  </div>
+            {subjects.map((subject, index) => {
+              const topicOverview = getTopicOverview(subject, week)
+              return (
+                <div key={index} className="p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+                  <h4 className="font-semibold text-lg text-gray-900 mb-3 flex items-center">
+                    <BookOpen className="h-5 w-5 mr-2 text-indigo-600" />
+                    {subject}
+                  </h4>
+                  {topicOverview ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-700 leading-relaxed">{topicOverview.description}</p>
+                      <div className="mt-3">
+                        <p className="text-xs font-semibold text-indigo-700 mb-2 uppercase tracking-wide">Key Topics:</p>
+                        <ul className="space-y-1.5">
+                          {topicOverview.keyTopics.map((topic, topicIndex) => (
+                            <li key={topicIndex} className="flex items-start text-sm text-gray-700">
+                              <span className="text-indigo-500 mr-2 mt-1">•</span>
+                              <span>{topic}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      {topicOverview.importantConcepts && topicOverview.importantConcepts.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-indigo-200">
+                          <p className="text-xs font-semibold text-purple-700 mb-2 uppercase tracking-wide">Important Concepts:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {topicOverview.importantConcepts.map((concept, conceptIndex) => (
+                              <span key={conceptIndex} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-md">
+                                {concept}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <Target className="h-4 w-4 mr-2 text-indigo-500" />
+                        <span>Core concepts and theories</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-indigo-500" />
+                        <span>Historical development and current research</span>
+                      </div>
+                      <div className="flex items-center">
+                        <BookOpen className="h-4 w-4 mr-2 text-indigo-500" />
+                        <span>Practical applications and case studies</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              )
+            })}
             {subjects.length === 0 && (
               <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
                 Select a subject from the dashboard to see tailored content.

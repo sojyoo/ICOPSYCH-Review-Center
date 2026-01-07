@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
@@ -35,7 +35,13 @@ function LoginPageContent() {
       if (result?.error) {
         alert('Invalid credentials')
       } else {
-        window.location.href = '/dashboard'
+        // Get session to check user role
+        const session = await getSession()
+        if (session?.user?.role === 'admin') {
+          window.location.href = '/admin'
+        } else {
+          window.location.href = '/dashboard'
+        }
       }
     } catch (error) {
       alert('Login failed')

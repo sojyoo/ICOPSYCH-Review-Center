@@ -17,6 +17,7 @@ import {
   Filter,
   Search
 } from 'lucide-react'
+import WeeklyStudyPlanComponent from '@/components/WeeklyStudyPlan'
 
 interface StudyRecommendation {
   id: string
@@ -37,6 +38,7 @@ export default function StudyPlanPage() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all')
   const [typeFilter, setTypeFilter] = useState<'all' | 'weakness' | 'strength' | 'review' | 'practice'>('all')
+  const [activeTab, setActiveTab] = useState<'weekly' | 'recommendations'>('weekly')
 
   useEffect(() => {
     if (status === 'loading') return
@@ -160,8 +162,43 @@ export default function StudyPlanPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="flex -mb-px">
+              <button
+                onClick={() => setActiveTab('weekly')}
+                className={`flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === 'weekly'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Calendar className="h-5 w-5 mr-2" />
+                Weekly Plan
+              </button>
+              <button
+                onClick={() => setActiveTab('recommendations')}
+                className={`flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === 'recommendations'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Brain className="h-5 w-5 mr-2" />
+                Recommendations
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'weekly' ? (
+          <WeeklyStudyPlanComponent />
+        ) : (
+          <>
+            {/* Filters */}
+            <div className="bg-white rounded-lg shadow p-6 mb-8">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center space-x-2">
               <Filter className="h-5 w-5 text-gray-500" />
@@ -313,6 +350,8 @@ export default function StudyPlanPage() {
             </div>
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   )

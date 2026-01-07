@@ -17,6 +17,7 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
+import StudyCalendar from '@/components/StudyCalendar'
 
 interface UserStats {
   weekProgress?: Array<{

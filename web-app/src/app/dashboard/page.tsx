@@ -20,9 +20,19 @@ import {
   FileText,
   Settings,
   HelpCircle,
-  UserPlus
+  UserPlus,
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
+import DailyStudyDashboard from '@/components/DailyStudyDashboard'
+import UserPreferences from '@/components/UserPreferences'
+import OnboardingModal from '@/components/OnboardingModal'
+import ConceptReviewQueue from '@/components/ConceptReviewQueue'
+import AtRiskAlerts from '@/components/AtRiskAlerts'
+import StudySessionTracker from '@/components/StudySessionTracker'
+import RiskLevelCard from '@/components/RiskLevelCard'
+import FeatureDisplay from '@/components/FeatureDisplay'
 
 interface UserStats {
   totalTests: number
@@ -68,14 +78,47 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek())
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [preferencesSet, setPreferencesSet] = useState(false)
 
   useEffect(() => {
     if (status === 'loading') return
     if (!session) redirect('/login')
     
+    // Redirect admin users to admin panel
+    if (session?.user?.role === 'admin') {
+      router.push('/admin')
+      return
+    }
+    
     // Load user stats and recommendations
     loadDashboardData()
-  }, [session, status])
+    checkPreferences()
+  }, [session, status, router])
+
+  const checkPreferences = async () => {
+    try {
+      const response = await fetch('/api/user/preferences')
+      if (response.ok) {
+        const prefs = await response.json()
+        // Check if preferences are set (has availability or habits)
+        const hasPreferences = prefs.dailyAvailability !== null || 
+                              prefs.habitActiveLearning !== null ||
+                              prefs.habitPlanning !== null ||
+                              prefs.habitDiscipline !== null ||
+                              prefs.habitConfidence !== null ||
+                              prefs.habitActiveTechniques !== null || // Legacy
+                              prefs.habitQuietEnv !== null || // Legacy
+                              prefs.weeklyStudyGoal !== 10.0
+        setPreferencesSet(hasPreferences)
+        if (!hasPreferences) {
+          setShowOnboarding(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error checking preferences:', error)
+    }
+  }
 
   const loadDashboardData = async () => {
     try {
@@ -96,6 +139,10 @@ export default function DashboardPage() {
       if (recResponse.ok) {
         const recs = await recResponse.json()
         setRecommendations(recs.recommendations || [])
+        // Store ML API status for display
+        if (recs.mlApiStatus) {
+          sessionStorage.setItem('mlApiStatus', recs.mlApiStatus)
+        }
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error)
@@ -106,15 +153,17 @@ export default function DashboardPage() {
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+    { id: "daily-study", label: "Today's Plan", icon: Clock },
+    { id: "study-sessions", label: "Study Sessions", icon: Clock },
     { id: "schedule", label: "Schedule", icon: Calendar },
     { id: "tests", label: "Tests", icon: Target },
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
-    ...(session?.user?.role === 'admin' ? [
-      { id: "admin", label: "Admin", icon: Settings },
-      { id: "users", label: "Users", icon: Users }
-    ] : []),
+    { id: "concept-review", label: "Review Queue", icon: RefreshCw },
+    { id: "alerts", label: "Alerts", icon: AlertCircle },
+    { id: "preferences", label: "Preferences", icon: Settings },
+    { id: "features", label: "ML Features", icon: Brain },
     { id: "help", label: "Help", icon: HelpCircle }
   ]
 
@@ -135,6 +184,19 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Onboarding Modal */}
+      {showOnboarding && (
+        <OnboardingModal
+          onComplete={() => {
+            setShowOnboarding(false)
+            setPreferencesSet(true)
+            loadDashboardData() // Reload to get updated recommendations
+          }}
+          onSkip={() => {
+            setShowOnboarding(false)
+          }}
+        />
+      )}
       {/* Header */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -234,8 +296,21 @@ export default function DashboardPage() {
             {activeTab === 'progress' && <ProgressContent userStats={userStats} />}
             {activeTab === 'study-plan' && <StudyPlanContent recommendations={recommendations} />}
             {activeTab === 'calendar' && <CalendarContent currentWeek={currentWeek} />}
-            {activeTab === 'admin' && session.user?.role === 'admin' && <AdminContent />}
-            {activeTab === 'users' && session.user?.role === 'admin' && <UsersContent />}
+            {activeTab === 'daily-study' && <DailyStudyDashboard />}
+            {activeTab === 'study-sessions' && <StudySessionTracker />}
+            {activeTab === 'concept-review' && <ConceptReviewQueue />}
+            {activeTab === 'alerts' && <AtRiskAlerts />}
+            {activeTab === 'preferences' && (
+              <UserPreferences 
+                key="preferences"
+                onSave={() => {
+                  // Refresh dashboard data after preferences are saved
+                  loadDashboardData()
+                  checkPreferences()
+                }}
+              />
+            )}
+            {activeTab === 'features' && <FeatureDisplay />}
             {activeTab === 'help' && <HelpContent />}
           </div>
         </div>
@@ -278,15 +353,14 @@ function DashboardContent({ userStats, recommendations, currentWeek, session }: 
   const getAllowedWeek = () => userStats?.nextAvailableWeek || currentWeek
 
   const getWeekStatus = (weekNumber: number) => {
-    // Temporarily lock weeks 2-18
-    if (weekNumber > 1) return 'locked'
-    
     const allowedWeek = getAllowedWeek()
     const progress = userStats?.weekProgress?.find(w => w.week === weekNumber)
 
     if (progress?.postCompleted) return 'completed'
     if (weekNumber < allowedWeek) return 'completed'
     if (weekNumber === allowedWeek) return 'current'
+    // Allow access to all weeks for testing/demo purposes
+    if (weekNumber <= 18) return 'current'
     return 'locked'
   }
 
@@ -329,6 +403,9 @@ function DashboardContent({ userStats, recommendations, currentWeek, session }: 
           Continue your psychology review journey. You're currently on Week {currentWeek}.
         </p>
       </div>
+
+      {/* Risk Level Card - ML Prediction */}
+      <RiskLevelCard />
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -444,9 +521,21 @@ function DashboardContent({ userStats, recommendations, currentWeek, session }: 
       </div>
 
       {/* Recommendations */}
-      {recommendations.length > 0 && (
+      {recommendations.length > 0 ? (
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Study Recommendations</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Study Recommendations</h3>
+            {recommendations.some(r => r.mlPowered) ? (
+              <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full flex items-center">
+                <Brain className="h-3 w-3 mr-1" />
+                ML-Powered
+              </span>
+            ) : (
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                Rule-Based
+              </span>
+            )}
+          </div>
           <div className="space-y-3">
             {recommendations.slice(0, 3).map((rec, index) => {
               // Format description with bold emphasis on important parts
@@ -487,6 +576,27 @@ function DashboardContent({ userStats, recommendations, currentWeek, session }: 
                 </div>
               )
             })}
+          </div>
+        </div>
+      ) : (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow p-6 border border-blue-200">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <Target className="h-8 w-8 text-blue-600" />
+            </div>
+            <div className="ml-4 flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Get Personalized Recommendations</h3>
+              <p className="text-sm text-gray-700 mb-4">
+                Complete your first pre-test to unlock personalized study recommendations powered by machine learning. 
+                The system will analyze your performance and create a customized study plan tailored to your strengths and areas for improvement.
+              </p>
+              <button
+                onClick={() => router.push(`/test?week=${currentWeek}&lecture=${getLectureForWeek(currentWeek)}&subjects=${getCurrentWeekData()?.activities[0]?.subjects.join(',') || ''}&type=pre-test`)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                Start Your First Test
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -549,22 +659,19 @@ function ScheduleContent({ currentWeek, userStats }: { currentWeek: number, user
   const progressMap = new Map((userStats?.weekProgress || []).map(item => [item.week, item]))
 
   const getWeekStatus = (weekNumber: number) => {
-    // Temporarily lock weeks 2-18
-    if (weekNumber > 1) return 'locked'
-    
     const progress = progressMap.get(weekNumber)
     if (progress?.postCompleted) return 'completed'
     if (weekNumber < allowedWeek) return 'completed'
     if (weekNumber === allowedWeek) return 'current'
+    // Allow access to all weeks for testing/demo purposes
+    if (weekNumber <= 18) return 'current'
     return 'locked'
   }
 
   const isActivityDisabled = (weekNumber: number, type: string) => {
-    // Temporarily lock weeks 2-18
-    if (weekNumber > 1) return true
-    
+    // Allow all weeks to be accessible
     if (weekNumber < allowedWeek) return true
-    if (weekNumber > allowedWeek) return true
+    if (weekNumber > 18) return true
 
     const progress = progressMap.get(weekNumber)
 
@@ -792,7 +899,7 @@ function ProgressContent({ userStats }: { userStats: UserStats | null }) {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Week-by-Week Progress</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {userStats.weekProgress.slice(0, 18).map((week) => {
-              const isLocked = week.week > 1
+              const isLocked = false // Allow all weeks
               const isCompleted = week.preCompleted && week.postCompleted
               const isInProgress = week.preCompleted && !week.postCompleted
               
@@ -991,23 +1098,6 @@ function CalendarContent({ currentWeek }: { currentWeek: number }) {
   )
 }
 
-function AdminContent() {
-  return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Admin Panel</h2>
-      <p className="text-gray-600">Admin features coming soon...</p>
-    </div>
-  )
-}
-
-function UsersContent() {
-  return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">User Management</h2>
-      <p className="text-gray-600">User management features coming soon...</p>
-    </div>
-  )
-}
 
 function HelpContent() {
   return (

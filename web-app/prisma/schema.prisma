@@ -23,8 +23,9 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  cohortRelation Cohort?       @relation(fields: [cohortId], references: [id])
+  cohortRelation Cohort?         @relation(fields: [cohortId], references: [id])
   testAttempts   TestAttempt[]
+  preferences    UserPreferences?
 
   @@map("users")
 }
@@ -226,4 +227,46 @@ model AtRiskAlert {
   @@index([riskLevel])
   @@index([isResolved])
   @@map("at_risk_alerts")
+}
+
+model TestSettings {
+  id                String   @id @default(cuid())
+  testType          String   @unique // pre-test, post-test, mock-exam
+  isLocked          Boolean  @default(false) // If true, tests are restricted
+  requirePrerequisite Boolean @default(false) // If true, require prerequisites (pre-test before post-test, etc.)
+  allowRetakes      Boolean  @default(true) // If true, allow retaking tests
+  lockedWeeks       String?  // JSON array of locked week numbers [2,3,4...]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("test_settings")
+}
+
+model UserPreferences {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Daily Availability (hours per day of week: 0=Sunday, 1=Monday, etc.)
+  // JSON: {"0": 2, "1": 4, "2": 3, ...} or null for default
+  dailyAvailability String? // JSON object: {dayOfWeek: hours}
+
+  // Study Habit Composite Scores (from Chapter 4 - normalized to 0-1)
+  // These composite scores are actively used in study plan generation
+  habitActiveLearning Float? // Composite: summarizing, highlighting, concept mapping (0-1)
+  habitPlanning      Float? // Composite: sets schedule, sets goals, plans ahead (0-1)
+  habitDiscipline    Float? // Composite: avoids procrastination, reviews immediately, maintains consistency (0-1)
+  habitConfidence    Float? // Confidence in passing exam (0-1)
+  
+  // Legacy fields (deprecated, kept for migration compatibility)
+  habitActiveTechniques  Float? // @deprecated - use habitActiveLearning instead
+  habitQuietEnv          Float? // @deprecated - not used in Chapter 4
+
+  // Weekly Study Goal (hours per week)
+  weeklyStudyGoal Float? @default(10.0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_preferences")
 }

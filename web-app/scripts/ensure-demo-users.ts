@@ -11,7 +11,7 @@ async function ensureDemoUsers() {
     })
 
     if (!admin) {
-      const hashedPassword = await bcrypt.hash('password123', 12)
+      const hashedPassword = await bcrypt.hash('admin123', 12)
       admin = await prisma.user.create({
         data: {
           name: 'Admin User',
@@ -23,7 +23,13 @@ async function ensureDemoUsers() {
       })
       console.log('✅ Created admin user')
     } else {
-      console.log('✅ Admin user already exists')
+      // Update password to admin123 if it exists
+      const hashedPassword = await bcrypt.hash('admin123', 12)
+      await prisma.user.update({
+        where: { email: 'admin@reviewcenter.com' },
+        data: { password: hashedPassword }
+      })
+      console.log('✅ Admin user already exists - password reset to admin123')
     }
 
     // Check for student user
