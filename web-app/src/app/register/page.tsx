@@ -17,11 +17,72 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    password: '',
+    studentNumber: ''
+  })
+
+  // Email format validation
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Password validation: 6 characters, one number, one uppercase, one special character
+  const validatePassword = (password: string): { valid: boolean; error: string } => {
+    if (password.length < 6) {
+      return { valid: false, error: 'Password must be at least 6 characters' }
+    }
+    if (!/[0-9]/.test(password)) {
+      return { valid: false, error: 'Password must contain at least one number' }
+    }
+    if (!/[A-Z]/.test(password)) {
+      return { valid: false, error: 'Password must contain at least one uppercase letter' }
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      return { valid: false, error: 'Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)' }
+    }
+    return { valid: true, error: '' }
+  }
+
+  // Student number validation: XXX-XXXXXM format
+  const validateStudentNumber = (studentNumber: string): { valid: boolean; error: string } => {
+    const studentNumberRegex = /^\d{3}-\d{4}[A-Z]$/
+    if (!studentNumberRegex.test(studentNumber)) {
+      return { valid: false, error: 'Student number must be in format XXX-XXXXXM (e.g., 225-0123M)' }
+    }
+    return { valid: true, error: '' }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setValidationErrors({ email: '', password: '', studentNumber: '' })
+
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      setValidationErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }))
+      setLoading(false)
+      return
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(formData.password)
+    if (!passwordValidation.valid) {
+      setValidationErrors(prev => ({ ...prev, password: passwordValidation.error }))
+      setLoading(false)
+      return
+    }
+
+    // Validate student number format
+    const studentNumberValidation = validateStudentNumber(formData.studentNumber)
+    if (!studentNumberValidation.valid) {
+      setValidationErrors(prev => ({ ...prev, studentNumber: studentNumberValidation.error }))
+      setLoading(false)
+      return
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
@@ -129,11 +190,26 @@ export default function RegisterPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${
+                  validationErrors.email ? 'border-red-300' : 'border-gray-300'
+                }`}
                 placeholder="Enter your email"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={(e) => {
+                  setFormData({...formData, email: e.target.value})
+                  if (validationErrors.email) {
+                    setValidationErrors(prev => ({ ...prev, email: '' }))
+                  }
+                }}
+                onBlur={() => {
+                  if (formData.email && !validateEmail(formData.email)) {
+                    setValidationErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }))
+                  }
+                }}
               />
+              {validationErrors.email && (
+                <p className="mt-1 text-xs text-red-600">{validationErrors.email}</p>
+              )}
             </div>
 
             {/* Student Number */}
@@ -146,12 +222,35 @@ export default function RegisterPage() {
                 name="studentNumber"
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase"
+                maxLength={9}
+                className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase ${
+                  validationErrors.studentNumber ? 'border-red-300' : 'border-gray-300'
+                }`}
                 placeholder="e.g. 225-0123M"
                 value={formData.studentNumber}
-                onChange={(e) => setFormData({...formData, studentNumber: e.target.value.toUpperCase()})}
+                onChange={(e) => {
+                  // Auto-format: XXX-XXXXXM
+                  let value = e.target.value.toUpperCase().replace(/[^0-9A-Z-]/g, '')
+                  // Auto-insert dash after 3 digits
+                  if (value.length > 3 && value[3] !== '-') {
+                    value = value.slice(0, 3) + '-' + value.slice(3)
+                  }
+                  setFormData({...formData, studentNumber: value})
+                  if (validationErrors.studentNumber) {
+                    setValidationErrors(prev => ({ ...prev, studentNumber: '' }))
+                  }
+                }}
+                onBlur={() => {
+                  if (formData.studentNumber && !validateStudentNumber(formData.studentNumber).valid) {
+                    setValidationErrors(prev => ({ ...prev, studentNumber: validateStudentNumber(formData.studentNumber).error }))
+                  }
+                }}
               />
-              <p className="mt-1 text-xs text-gray-500">This will be used to uniquely identify your account.</p>
+              {validationErrors.studentNumber ? (
+                <p className="mt-1 text-xs text-red-600">{validationErrors.studentNumber}</p>
+              ) : (
+                <p className="mt-1 text-xs text-gray-500">Format: XXX-XXXXXM (e.g., 225-0123M)</p>
+              )}
             </div>
             
             {/* Password */}
@@ -166,10 +265,22 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className={`w-full px-3 py-2 pr-10 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${
+                    validationErrors.password ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Create a password"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => {
+                    setFormData({...formData, password: e.target.value})
+                    if (validationErrors.password) {
+                      setValidationErrors(prev => ({ ...prev, password: '' }))
+                    }
+                  }}
+                  onBlur={() => {
+                    if (formData.password && !validatePassword(formData.password).valid) {
+                      setValidationErrors(prev => ({ ...prev, password: validatePassword(formData.password).error }))
+                    }
+                  }}
                 />
                 <button
                   type="button"
@@ -184,6 +295,14 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {validationErrors.password && (
+                <p className="mt-1 text-xs text-red-600">{validationErrors.password}</p>
+              )}
+              {formData.password && !validationErrors.password && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Must be 6+ characters with: one number, one uppercase letter, one special character
+                </p>
+              )}
             </div>
             
             {/* Confirm Password */}
