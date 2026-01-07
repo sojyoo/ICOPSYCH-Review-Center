@@ -21,14 +21,12 @@ import {
   FileText,
   Settings,
   HelpCircle,
-  UserPlus,
-  RefreshCw
+  UserPlus
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
 import DailyStudyDashboard from '@/components/DailyStudyDashboard'
 import UserPreferences from '@/components/UserPreferences'
 import OnboardingModal from '@/components/OnboardingModal'
-import ConceptReviewQueue from '@/components/ConceptReviewQueue'
 import StudySessionTracker from '@/components/StudySessionTracker'
 import RiskLevelCard from '@/components/RiskLevelCard'
 import FeatureDisplay from '@/components/FeatureDisplay'
@@ -160,7 +158,6 @@ export default function DashboardPage() {
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
-    { id: "concept-review", label: "Review Queue", icon: RefreshCw },
     { id: "preferences", label: "Preferences", icon: Settings },
     { id: "features", label: "ML Features", icon: Brain },
     { id: "help", label: "Help", icon: HelpCircle }
@@ -297,7 +294,6 @@ export default function DashboardPage() {
             {activeTab === 'calendar' && <CalendarContent currentWeek={currentWeek} />}
             {activeTab === 'daily-study' && <DailyStudyDashboard />}
             {activeTab === 'study-sessions' && <StudySessionTracker />}
-            {activeTab === 'concept-review' && <ConceptReviewQueue />}
             {activeTab === 'preferences' && (
               <UserPreferences 
                 key="preferences"
