@@ -139,6 +139,22 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Override ML prediction for new users (no test attempts) to medium risk
+    // The ML model may predict high risk for users with 0 tests, but we should default to medium
+    // since we don't have enough data to assess risk accurately
+    if (testAttempts.length === 0 && mlPrediction.riskLevel === 'high') {
+      console.log('⚠️ New user detected with high risk prediction. Overriding to medium risk.')
+      mlPrediction = {
+        ...mlPrediction,
+        riskLevel: 'medium',
+        riskProbabilities: {
+          high: 0.2,
+          medium: 0.7,
+          low: 0.1
+        }
+      }
+    }
+
     return NextResponse.json({
       riskLevel: mlPrediction.riskLevel || 'medium',
       riskProbabilities: mlPrediction.riskProbabilities || {},
