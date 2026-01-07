@@ -267,35 +267,39 @@ export default function RegisterPage() {
                 name="studentNumber"
                 type="text"
                 required
-                maxLength={9}
+                // Allow an extra char so the browser doesn't block typing the final letter (e.g., "M")
+                // We'll normalize to the correct format in onChange.
+                maxLength={10}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase ${
                   validationErrors.studentNumber ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="e.g. 225-0123M"
                 value={formData.studentNumber}
                 onChange={(e) => {
-                  // Auto-format: XXX-XXXXXM (9 characters total)
-                  let value = e.target.value.toUpperCase().replace(/[^0-9A-Z-]/g, '')
-                  
-                  // Auto-insert dash after 3 digits if not already there
-                  if (value.length > 3 && value[3] !== '-') {
-                    value = value.slice(0, 3) + '-' + value.slice(3)
+                  // Normalize to XXX-XXXXXM (3 digits + dash + 4 digits + 1 letter)
+                  // This approach is resilient even if the user types extra digits before the final letter.
+                  const raw = e.target.value.toUpperCase()
+                  const digits = raw.replace(/\D/g, '') // all digits
+                  const letters = raw.replace(/[^A-Z]/g, '') // all letters
+
+                  const partA = digits.slice(0, 3)
+                  const partB = digits.slice(3, 7)
+                  const suffix = letters.slice(-1) // last letter typed (e.g., M)
+
+                  let value = partA
+                  if (partA.length === 3) {
+                    value += '-' + partB
+                  } else if (digits.length > 3) {
+                    // If user is still typing, show dash once they exceed 3 digits
+                    value += '-' + partB
                   }
-                  
-                  // Format: XXX-XXXXXM (3 digits + dash + 4 digits + 1 letter = 9 chars)
-                  // After position 8 (XXX-XXXX), only allow letters
-                  if (value.length >= 9) {
-                    const beforeLast = value.slice(0, 8) // XXX-XXXX
-                    const lastChar = value.slice(8, 9) // Should be a letter
-                    // If last character is a digit, replace it with the new input (if it's a letter)
-                    if (/[0-9]/.test(lastChar) && /[A-Z]/.test(e.target.value.slice(-1).toUpperCase())) {
-                      // User is trying to type a letter after digits, replace the last digit
-                      value = beforeLast + e.target.value.slice(-1).toUpperCase()
-                    } else if (value.length > 9) {
-                      // Limit to 9 characters
-                      value = value.slice(0, 9)
-                    }
+
+                  if (suffix) {
+                    value += suffix
                   }
+
+                  // Clamp to 9 chars max (XXX-XXXXXM)
+                  value = value.slice(0, 9)
                   
                   setFormData({...formData, studentNumber: value})
                   if (validationErrors.studentNumber) {
