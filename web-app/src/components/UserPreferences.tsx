@@ -87,27 +87,31 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
   // Update individual habit item and recalculate composite
   const updateHabitItem = (category: 'activeLearning' | 'planning' | 'discipline', itemKey: string, value: number) => {
     console.log(`🎚️ Updating ${category}.${itemKey} to ${value}`)
-    const newItems = {
-      ...habitItems,
-      [category]: {
-        ...habitItems[category],
-        [itemKey]: value
+    setHabitItems(prevItems => {
+      const newItems = {
+        ...prevItems,
+        [category]: {
+          ...prevItems[category],
+          [itemKey]: value
+        }
       }
-    }
-    setHabitItems(newItems)
-    
-    // Calculate and update composite score
-    const items = Object.values(newItems[category])
-    const composite = calculateComposite(items)
-    console.log(`📊 Calculated composite for ${category}: ${composite} (from items: ${items.join(', ')})`)
-    
-    if (category === 'activeLearning') {
-      updateHabit('habitActiveLearning', composite)
-    } else if (category === 'planning') {
-      updateHabit('habitPlanning', composite)
-    } else if (category === 'discipline') {
-      updateHabit('habitDiscipline', composite)
-    }
+      
+      // Calculate and update composite score immediately
+      const items = Object.values(newItems[category])
+      const composite = calculateComposite(items)
+      console.log(`📊 Calculated composite for ${category}: ${composite} (from items: ${items.join(', ')})`)
+      
+      // Update preferences immediately with the new composite
+      if (category === 'activeLearning') {
+        updateHabit('habitActiveLearning', composite)
+      } else if (category === 'planning') {
+        updateHabit('habitPlanning', composite)
+      } else if (category === 'discipline') {
+        updateHabit('habitDiscipline', composite)
+      }
+      
+      return newItems
+    })
   }
 
   useEffect(() => {
