@@ -76,9 +76,10 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       }
     }
     
-    // Filter by week if provided (for pre-test and post-test)
+    // Filter by week if provided (for regular tests, NOT pre-test/post-test)
+    // Pre-tests and post-tests should cover ALL weeks to assess all subject areas
     // Mock exams use all weeks, review weeks (13-15) can use multiple weeks
-    if (week > 0 && type !== 'mock-exam') {
+    if (week > 0 && type !== 'mock-exam' && type !== 'pre-test' && type !== 'post-test') {
       if (week >= 13 && week <= 15) {
         // Review weeks can use questions from all previous weeks
         whereClause.week = {
@@ -91,7 +92,8 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
     }
     
     // Filter by lecture if provided (optional, for more precise matching)
-    if (lecture > 0 && type !== 'mock-exam' && week < 13) {
+    // Pre-tests and post-tests should NOT filter by lecture - they cover all topics
+    if (lecture > 0 && type !== 'mock-exam' && type !== 'pre-test' && type !== 'post-test' && week < 13) {
       whereClause.lecture = lecture
     }
     
@@ -99,6 +101,10 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
     // Mock exams will use all available questions
 
     console.log('🔍 Querying database with whereClause:', whereClause)
+    console.log('📋 Test type:', type, '| Week:', week, '| Lecture:', lecture)
+    if (type === 'pre-test' || type === 'post-test') {
+      console.log('✅ Pre/Post-test: Ignoring week/lecture filters, using ALL questions from all 4 core subjects')
+    }
 
     // Load questions from database
     let questions = await prisma.question.findMany({
@@ -107,6 +113,8 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
         id: 'asc'
       }
     })
+    
+    console.log(`📊 Found ${questions.length} questions from database query`)
 
     console.log(`🔍 Found ${questions.length} questions for subjects: ${subjects.join(', ')}`)
 
