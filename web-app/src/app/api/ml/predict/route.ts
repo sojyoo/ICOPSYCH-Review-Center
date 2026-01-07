@@ -34,6 +34,19 @@ export async function GET(request: NextRequest) {
 
     // Calculate feature vector (20 features as described in Chapter 4)
     const featureVector = await calculateFeatureVector(testAttempts, preferences)
+    
+    // Log feature vector for debugging
+    console.log('📊 Feature vector calculated:', {
+      overall_avg_score: featureVector.overall_avg_score,
+      subject_scores: {
+        abnormal: featureVector.abnormal_psych_score,
+        developmental: featureVector.developmental_psych_score,
+        industrial: featureVector.industrial_psych_score,
+        assessment: featureVector.psychological_assessment_score
+      },
+      total_tests: featureVector.total_tests_taken,
+      test_attempts_count: testAttempts.length
+    })
 
     // Call ML API (Chapter 4 Section 4.6.2.A)
     // Supports both ML_API_URL (full URL) and ML_API_BASE_URL + ML_API_ENDPOINT
@@ -77,6 +90,11 @@ export async function GET(request: NextRequest) {
         mlPrediction = await response.json()
         mlStatus = 'available'
         console.log('✅ ML API response successful:', mlPrediction)
+        console.log('📊 ML Prediction details:', {
+          riskLevel: mlPrediction.riskLevel,
+          riskProbabilities: mlPrediction.riskProbabilities,
+          featureVector_overall_score: featureVector.overall_avg_score
+        })
       } else {
         let errorText: string
         try {
@@ -151,6 +169,21 @@ export async function GET(request: NextRequest) {
           high: 0.2,
           medium: 0.7,
           low: 0.1
+        }
+      }
+    }
+
+    // Safety override: If overall score is very low (< 10), force high risk regardless of ML prediction
+    // This prevents cases where low scores incorrectly get low risk predictions
+    if (featureVector.overall_avg_score < 10 && mlPrediction.riskLevel !== 'high') {
+      console.log(`⚠️ Safety override: Overall score is ${featureVector.overall_avg_score} (< 10), forcing high risk. ML predicted: ${mlPrediction.riskLevel}`)
+      mlPrediction = {
+        ...mlPrediction,
+        riskLevel: 'high',
+        riskProbabilities: {
+          high: 0.8,
+          medium: 0.15,
+          low: 0.05
         }
       }
     }
