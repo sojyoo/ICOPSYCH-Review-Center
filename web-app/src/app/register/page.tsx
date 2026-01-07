@@ -47,11 +47,10 @@ export default function RegisterPage() {
     return { valid: true, error: '' }
   }
 
-  // Student number validation: XXX-XXXXXM format
+  // Student number validation: just check it's not empty
   const validateStudentNumber = (studentNumber: string): { valid: boolean; error: string } => {
-    const studentNumberRegex = /^\d{3}-\d{4}[A-Z]$/
-    if (!studentNumberRegex.test(studentNumber)) {
-      return { valid: false, error: 'Student number must be in format XXX-XXXXXM (e.g., 225-0123M)' }
+    if (!studentNumber.trim()) {
+      return { valid: false, error: 'Student number is required' }
     }
     return { valid: true, error: '' }
   }

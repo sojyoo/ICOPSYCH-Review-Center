@@ -43,10 +43,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Password must contain at least one special character" }, { status: 400 })
     }
 
-    // Validate student number format: XXX-XXXXXM
-    const studentNumberRegex = /^\d{3}-\d{4}[A-Z]$/
-    if (!studentNumberRegex.test(studentNumber)) {
-      return NextResponse.json({ error: "Student number must be in format XXX-XXXXXM (e.g., 225-0123M)" }, { status: 400 })
+    // Student number: just ensure it's not empty (no format restriction)
+    if (!studentNumber.trim()) {
+      return NextResponse.json({ error: "Student number is required" }, { status: 400 })
     }
 
     // Check if user already exists
