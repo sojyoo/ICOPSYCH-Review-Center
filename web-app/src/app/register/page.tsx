@@ -267,14 +267,14 @@ export default function RegisterPage() {
                 name="studentNumber"
                 type="text"
                 required
-                maxLength={10}
+                maxLength={9}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 uppercase ${
                   validationErrors.studentNumber ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="e.g. 225-0123M"
                 value={formData.studentNumber}
                 onChange={(e) => {
-                  // Auto-format: XXX-XXXXXM
+                  // Auto-format: XXX-XXXXXM (9 characters total)
                   let value = e.target.value.toUpperCase().replace(/[^0-9A-Z-]/g, '')
                   
                   // Auto-insert dash after 3 digits if not already there
@@ -282,18 +282,19 @@ export default function RegisterPage() {
                     value = value.slice(0, 3) + '-' + value.slice(3)
                   }
                   
-                  // Limit to format: XXX-XXXXXM (max 10 chars: 3 digits + dash + 4 digits + 1 letter)
-                  // Allow up to 9 characters before the final letter
-                  if (value.length > 10) {
-                    value = value.slice(0, 10)
-                  }
-                  
-                  // If we have XXX-XXXX format (8 chars), allow one more character (the M)
-                  // If we have XXX-XXXXX (9 chars with dash), limit to prevent extra digits
-                  if (value.length === 9 && value[8] !== '-') {
-                    // If 9th character is a digit, we're at XXX-XXXXX, need to allow M
-                    // But the format should be XXX-XXXXM, so we need to handle this
-                    // Actually, let's just allow up to 10 characters total
+                  // Format: XXX-XXXXXM (3 digits + dash + 4 digits + 1 letter = 9 chars)
+                  // After position 8 (XXX-XXXX), only allow letters
+                  if (value.length >= 9) {
+                    const beforeLast = value.slice(0, 8) // XXX-XXXX
+                    const lastChar = value.slice(8, 9) // Should be a letter
+                    // If last character is a digit, replace it with the new input (if it's a letter)
+                    if (/[0-9]/.test(lastChar) && /[A-Z]/.test(e.target.value.slice(-1).toUpperCase())) {
+                      // User is trying to type a letter after digits, replace the last digit
+                      value = beforeLast + e.target.value.slice(-1).toUpperCase()
+                    } else if (value.length > 9) {
+                      // Limit to 9 characters
+                      value = value.slice(0, 9)
+                    }
                   }
                   
                   setFormData({...formData, studentNumber: value})
