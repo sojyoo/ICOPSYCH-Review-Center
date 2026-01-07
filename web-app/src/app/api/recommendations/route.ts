@@ -137,13 +137,14 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
     const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
     mlApiUrl = `${mlApiBaseUrl}/recommendations`
   }
-  const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 4000)
+  // Render free tier can take 50+ seconds to wake up from cold start
+  const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 60000) // 60 seconds for cold start
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutDuration)
 
   let response: Response
   try {
-    console.log(`🔗 Calling ML API recommendations at: ${mlApiUrl}`)
+    console.log(`🔗 Calling ML API recommendations at: ${mlApiUrl} (timeout: ${timeoutDuration}ms)`)
     response = await fetch(mlApiUrl, {
       method: 'POST',
       headers: {
@@ -159,9 +160,16 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
     clearTimeout(timeoutId)
     if (error instanceof Error && error.name === 'AbortError') {
       console.error(`⏱️ ML API request timed out after ${timeoutDuration}ms`)
-      throw new Error(`ML API request timed out after ${timeoutDuration}ms`)
+      console.error(`⏱️ This might be a Render cold start. Try again in a few seconds.`)
+      throw new Error(`ML API request timed out after ${timeoutDuration}ms (Render cold start may take 50+ seconds)`)
     }
     console.error('❌ ML API request failed:', error)
+    if (error instanceof Error) {
+      console.error('❌ Error details:', {
+        name: error.name,
+        message: error.message
+      })
+    }
     throw error
   }
   clearTimeout(timeoutId)
@@ -169,6 +177,12 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
   if (!response.ok) {
     const errorText = await response.text()
     console.error(`❌ ML API error (${response.status}):`, errorText)
+    console.error(`❌ Full error details:`, {
+      status: response.status,
+      statusText: response.statusText,
+      url: mlApiUrl,
+      errorText: errorText.substring(0, 500)
+    })
     throw new Error(`ML API returned ${response.status}: ${errorText}`)
   }
 

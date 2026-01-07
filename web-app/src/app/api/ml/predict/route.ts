@@ -48,7 +48,9 @@ export async function GET(request: NextRequest) {
       const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
       mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
     }
-    const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 5000)
+    // Render free tier can take 50+ seconds to wake up from cold start
+    // Use longer timeout for first request, shorter for retries
+    const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 60000) // 60 seconds for cold start
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeoutDuration)
 
@@ -56,7 +58,7 @@ export async function GET(request: NextRequest) {
     let mlStatus = 'unavailable'
 
     try {
-      console.log(`🔗 Calling ML API at: ${mlApiUrl}`)
+      console.log(`🔗 Calling ML API at: ${mlApiUrl} (timeout: ${timeoutDuration}ms)`)
       const response = await fetch(mlApiUrl, {
         method: 'POST',
         headers: {
@@ -78,15 +80,29 @@ export async function GET(request: NextRequest) {
       } else {
         const errorText = await response.text()
         console.error(`❌ ML API error (${response.status}):`, errorText)
+        console.error(`❌ Full error details:`, {
+          status: response.status,
+          statusText: response.statusText,
+          url: mlApiUrl,
+          errorText: errorText.substring(0, 500) // Limit error text length
+        })
         mlStatus = 'error'
       }
     } catch (error) {
       clearTimeout(timeoutId)
       if (error instanceof Error && error.name === 'AbortError') {
-        console.error('⏱️ ML API timeout after', timeoutDuration, 'ms')
+        console.error(`⏱️ ML API timeout after ${timeoutDuration}ms`)
+        console.error(`⏱️ This might be a Render cold start. Try again in a few seconds.`)
         mlStatus = 'timeout'
       } else {
         console.error('❌ ML API request failed:', error)
+        if (error instanceof Error) {
+          console.error('❌ Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack?.substring(0, 500)
+          })
+        }
         mlStatus = 'error'
       }
     }
