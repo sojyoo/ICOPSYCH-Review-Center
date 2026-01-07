@@ -67,6 +67,7 @@ interface Recommendation {
   priority: 'high' | 'medium' | 'low'
   subjects: string[]
   estimatedTime: number
+  mlPowered?: boolean
 }
 
 export default function DashboardPage() {
