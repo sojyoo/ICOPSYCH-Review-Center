@@ -299,7 +299,8 @@ function calculateAverage(values: number[]): number | null {
 }
 
 function calculateRuleBasedRiskLevel(features: any): 'high' | 'medium' | 'low' {
-  const score = features.overall_avg_score || 24.0
+  // Use 25.0 as default (medium risk) instead of 24.0 (high risk) for new users
+  const score = features.overall_avg_score ?? 25.0
   if (score < 20) return 'high'
   if (score < 26) return 'medium'
   return 'low'

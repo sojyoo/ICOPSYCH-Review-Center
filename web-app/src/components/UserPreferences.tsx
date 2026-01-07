@@ -310,7 +310,15 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
     setSaving(true)
     setSaved(false)
 
+    // Log the composite scores to verify they're being saved
     console.log('💾 Saving preferences:', preferences)
+    console.log('💾 Composite scores being saved:', {
+      habitActiveLearning: preferences.habitActiveLearning,
+      habitPlanning: preferences.habitPlanning,
+      habitDiscipline: preferences.habitDiscipline,
+      habitConfidence: preferences.habitConfidence
+    })
+    console.log('💾 Current habitItems:', habitItems)
     try {
       const response = await fetch('/api/user/preferences', {
         method: 'PUT',
