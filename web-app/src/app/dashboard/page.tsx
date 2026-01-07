@@ -23,11 +23,9 @@ import {
   UserPlus
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
-import DailyStudyDashboard from '@/components/DailyStudyDashboard'
 import UserPreferences from '@/components/UserPreferences'
 import OnboardingModal from '@/components/OnboardingModal'
 import RiskLevelCard from '@/components/RiskLevelCard'
-import FeatureDisplay from '@/components/FeatureDisplay'
 
 interface UserStats {
   totalTests: number
@@ -149,13 +147,11 @@ export default function DashboardPage() {
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
-    { id: "daily-study", label: "Today's Plan", icon: Clock },
     { id: "schedule", label: "Schedule", icon: Calendar },
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
-    { id: "preferences", label: "Preferences", icon: Settings },
-    { id: "features", label: "ML Features", icon: Brain }
+    { id: "preferences", label: "Preferences", icon: Settings }
   ]
 
   if (status === 'loading' || loading) {
@@ -315,7 +311,6 @@ export default function DashboardPage() {
             )}
             {activeTab === 'schedule' && <ScheduleContent currentWeek={currentWeek} userStats={userStats} />}
             {activeTab === 'progress' && <ProgressContent userStats={userStats} />}
-            {activeTab === 'daily-study' && <DailyStudyDashboard />}
             {activeTab === 'preferences' && (
               <UserPreferences 
                 key="preferences"
@@ -326,7 +321,6 @@ export default function DashboardPage() {
                 }}
               />
             )}
-            {activeTab === 'features' && <FeatureDisplay />}
           </div>
         </div>
       </div>
