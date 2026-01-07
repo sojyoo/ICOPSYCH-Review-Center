@@ -20,14 +20,16 @@ $folders = @(
 )
 
 foreach ($folder in $folders) {
-    New-Item -ItemType Directory -Path $folder -Force | Out-Null
-    Write-Host "  ✓ Created: $folder" -ForegroundColor Green
+    if (-not (Test-Path $folder)) {
+        New-Item -ItemType Directory -Path $folder -Force | Out-Null
+        Write-Host "  ✓ Created: $folder" -ForegroundColor Green
+    }
 }
 
 Write-Host "`n📄 Moving files..." -ForegroundColor Cyan
 
-# Move documentation files
-$docs = @(
+# Move documentation files to docs/
+$docPatterns = @(
     "CHAPTER4_*.md",
     "*_SUMMARY.md",
     "*_GUIDE.md",
@@ -38,28 +40,31 @@ $docs = @(
     "CV_TECHNICAL_SKILLS.txt",
     "THESIS_TABLE_FORMAT_EXAMPLE.md",
     "DATA_PROVENANCE.md",
-    "DATA_RELEVANCE_CRITICAL_ANALYSIS.md"
+    "DATA_RELEVANCE_CRITICAL_ANALYSIS.md",
+    "ADMIN_PANEL_COMPLETE.md",
+    "PUSH_CHECKLIST.md",
+    "REPOSITORY_*.md"
 )
 
-foreach ($pattern in $docs) {
-    Get-ChildItem -Path . -Filter $pattern -File | ForEach-Object {
+foreach ($pattern in $docPatterns) {
+    Get-ChildItem -Path . -Filter $pattern -File -ErrorAction SilentlyContinue | ForEach-Object {
+        $dest = "docs/"
         if ($_.Name -like "CHAPTER4*") {
-            Move-Item $_.FullName -Destination "docs/thesis/" -Force
-        } elseif ($_.Name -like "*DEPLOYMENT*" -or $_.Name -like "*DEPLOYMENT*") {
-            Move-Item $_.FullName -Destination "docs/deployment/" -Force
-        } else {
-            Move-Item $_.FullName -Destination "docs/" -Force
+            $dest = "docs/thesis/"
+        } elseif ($_.Name -like "*DEPLOYMENT*") {
+            $dest = "docs/deployment/"
         }
-        Write-Host "  ✓ Moved: $($_.Name)" -ForegroundColor Yellow
+        Move-Item $_.FullName -Destination $dest -Force -ErrorAction SilentlyContinue
+        Write-Host "  ✓ Moved: $($_.Name) -> $dest" -ForegroundColor Yellow
     }
 }
 
-# Move raw data folders (if they exist and aren't needed by app)
+# Move raw data folders
 $rawDataFolders = @("Pre-Tests", "Posttests", "Pre-Board Exam", "Mock Board Exam")
 foreach ($folder in $rawDataFolders) {
     if (Test-Path $folder) {
         Move-Item $folder -Destination "data/raw/" -Force -ErrorAction SilentlyContinue
-        Write-Host "  ✓ Moved folder: $folder" -ForegroundColor Yellow
+        Write-Host "  ✓ Moved folder: $folder -> data/raw/" -ForegroundColor Yellow
     }
 }
 
@@ -73,7 +78,7 @@ $rawCsvs = @(
 foreach ($file in $rawCsvs) {
     if (Test-Path $file) {
         Move-Item $file -Destination "data/raw/" -Force -ErrorAction SilentlyContinue
-        Write-Host "  ✓ Moved: $file" -ForegroundColor Yellow
+        Write-Host "  ✓ Moved: $file -> data/raw/" -ForegroundColor Yellow
     }
 }
 
@@ -89,27 +94,30 @@ $analysisCsvs = @(
 foreach ($file in $analysisCsvs) {
     if (Test-Path $file) {
         Move-Item $file -Destination "data/analysis/" -Force -ErrorAction SilentlyContinue
-        Write-Host "  ✓ Moved: $file" -ForegroundColor Yellow
+        Write-Host "  ✓ Moved: $file -> data/analysis/" -ForegroundColor Yellow
     }
 }
 
 # Move content folders
-$contentFolders = @("Lecture Materials", "Orientation PPTs", "Schedule")
-foreach ($folder in $contentFolders) {
-    if (Test-Path $folder) {
-        if ($folder -eq "Lecture Materials") {
-            Move-Item $folder -Destination "content/lectures/" -Force -ErrorAction SilentlyContinue
-        } elseif ($folder -eq "Schedule") {
-            Move-Item $folder -Destination "content/schedules/" -Force -ErrorAction SilentlyContinue
-        } else {
-            Move-Item $folder -Destination "content/presentations/" -Force -ErrorAction SilentlyContinue
-        }
-        Write-Host "  ✓ Moved folder: $folder" -ForegroundColor Yellow
-    }
+if (Test-Path "Lecture Materials") {
+    Move-Item "Lecture Materials" -Destination "content/lectures/" -Force -ErrorAction SilentlyContinue
+    Write-Host "  ✓ Moved folder: Lecture Materials -> content/lectures/" -ForegroundColor Yellow
+}
+if (Test-Path "Schedule") {
+    Move-Item "Schedule" -Destination "content/schedules/" -Force -ErrorAction SilentlyContinue
+    Write-Host "  ✓ Moved folder: Schedule -> content/schedules/" -ForegroundColor Yellow
+}
+if (Test-Path "Orientation PPTs") {
+    Move-Item "Orientation PPTs" -Destination "content/presentations/" -Force -ErrorAction SilentlyContinue
+    Write-Host "  ✓ Moved folder: Orientation PPTs -> content/presentations/" -ForegroundColor Yellow
+}
+if (Test-Path "ReviewCenter_Portable") {
+    Move-Item "ReviewCenter_Portable" -Destination "content/" -Force -ErrorAction SilentlyContinue
+    Write-Host "  ✓ Moved folder: ReviewCenter_Portable -> content/" -ForegroundColor Yellow
 }
 
 # Move training scripts
-$trainingScripts = @(
+$trainingPatterns = @(
     "train_*.py",
     "check_*.py",
     "analyze_*.py",
@@ -125,12 +133,11 @@ $trainingScripts = @(
     "enhanced_ml_model.py"
 )
 
-foreach ($pattern in $trainingScripts) {
-    Get-ChildItem -Path . -Filter $pattern -File | ForEach-Object {
-        # Skip concept_mastery_tracker.py (needed by ML API)
+foreach ($pattern in $trainingPatterns) {
+    Get-ChildItem -Path . -Filter $pattern -File -ErrorAction SilentlyContinue | ForEach-Object {
         if ($_.Name -ne "concept_mastery_tracker.py") {
-            Move-Item $_.FullName -Destination "scripts/training/" -Force
-            Write-Host "  ✓ Moved: $($_.Name)" -ForegroundColor Yellow
+            Move-Item $_.FullName -Destination "scripts/training/" -Force -ErrorAction SilentlyContinue
+            Write-Host "  ✓ Moved: $($_.Name) -> scripts/training/" -ForegroundColor Yellow
         }
     }
 }
@@ -138,29 +145,29 @@ foreach ($pattern in $trainingScripts) {
 # Move analysis results
 if (Test-Path "model_comparison") {
     Move-Item "model_comparison" -Destination "analysis/results/" -Force -ErrorAction SilentlyContinue
-    Write-Host "  ✓ Moved folder: model_comparison" -ForegroundColor Yellow
+    Write-Host "  ✓ Moved folder: model_comparison -> analysis/results/" -ForegroundColor Yellow
 }
 
 if (Test-Path "figures") {
     Move-Item "figures" -Destination "analysis/results/" -Force -ErrorAction SilentlyContinue
-    Write-Host "  ✓ Moved folder: figures" -ForegroundColor Yellow
+    Write-Host "  ✓ Moved folder: figures -> analysis/results/" -ForegroundColor Yellow
 }
 
 if (Test-Path "training_logs") {
     Move-Item "training_logs" -Destination "analysis/results/" -Force -ErrorAction SilentlyContinue
-    Write-Host "  ✓ Moved folder: training_logs" -ForegroundColor Yellow
+    Write-Host "  ✓ Moved folder: training_logs -> analysis/results/" -ForegroundColor Yellow
 }
 
 # Move Excel analysis files
-Get-ChildItem -Path . -Filter "*.xlsx" -File | ForEach-Object {
+Get-ChildItem -Path . -Filter "*.xlsx" -File -ErrorAction SilentlyContinue | ForEach-Object {
     Move-Item $_.FullName -Destination "analysis/results/" -Force -ErrorAction SilentlyContinue
-    Write-Host "  ✓ Moved: $($_.Name)" -ForegroundColor Yellow
+    Write-Host "  ✓ Moved: $($_.Name) -> analysis/results/" -ForegroundColor Yellow
 }
 
-# Move thesis folder if it exists
+# Move thesis folder
 if (Test-Path "thesis_datasets") {
     Move-Item "thesis_datasets" -Destination "thesis/" -Force -ErrorAction SilentlyContinue
-    Write-Host "  ✓ Moved folder: thesis_datasets" -ForegroundColor Yellow
+    Write-Host "  ✓ Moved folder: thesis_datasets -> thesis/" -ForegroundColor Yellow
 }
 
 Write-Host "`n✅ Repository organization complete!" -ForegroundColor Green
@@ -177,4 +184,3 @@ Write-Host "  - web-app/ (entire folder)" -ForegroundColor White
 Write-Host "  - README.md" -ForegroundColor White
 
 Write-Host "`n⚠️  Review changes before committing!" -ForegroundColor Yellow
-

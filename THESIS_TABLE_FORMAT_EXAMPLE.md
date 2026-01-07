@@ -75,18 +75,6 @@ weighted avg,0.8760508308895405,0.8387096774193549,0.8225215644570483,31.0
 | **Macro Average** | **0.74** | **0.71** | **0.72** | **31** |
 | **Weighted Average** | **0.74** | **0.71** | **0.72** | **31** |
 
-### Bayesian Optimization
-
-**Table 4.17: Classification Report of Bayesian Optimization**
-
-| Risk Level | Precision | Recall | F1-Score | Support |
-|------------|-----------|--------|----------|---------|
-| High Risk  | 0.91      | 1.00   | 0.95     | 10      |
-| Low Risk   | 0.73      | 1.00   | 0.85     | 11      |
-| Medium Risk| 1.00      | 0.50   | 0.67     | 10      |
-| **Accuracy** | **0.84** | **0.84** | **0.84** | **31** |
-| **Macro Average** | **0.88** | **0.83** | **0.82** | **31** |
-| **Weighted Average** | **0.88** | **0.84** | **0.82** | **31** |
 
 ### Curriculum Learning
 
