@@ -75,7 +75,8 @@ async function generateStudyRecommendations(userId: string): Promise<StudyRecomm
         return mlRecommendations.map(rec => ({ ...rec, mlPowered: true }))
       }
     } catch (mlError) {
-      console.log('⚠️ ML API unavailable, falling back to rule-based recommendations:', mlError)
+      const errorMessage = mlError instanceof Error ? mlError.message : String(mlError)
+      console.error('⚠️ ML API unavailable, falling back to rule-based recommendations:', errorMessage)
       mlStatus = 'unavailable'
     }
 
@@ -125,17 +126,16 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
   })
 
   // Call ML API (Chapter 4 Section 4.6.2.A)
-  // Supports both ML_API_URL (full URL) and ML_API_BASE_URL + ML_API_ENDPOINT
+  // Use /recommendations endpoint which expects subjectScores
   let mlApiUrl: string
   if (process.env.ML_API_URL) {
-    // If ML_API_URL is provided, use it directly (but ensure it points to /api/predict)
-    const baseUrl = process.env.ML_API_URL.replace(/\/recommendations$/, '').replace(/\/$/, '')
-    mlApiUrl = `${baseUrl}/api/predict`
+    // If ML_API_URL is provided, use it directly (but ensure it points to /recommendations)
+    const baseUrl = process.env.ML_API_URL.replace(/\/api\/predict$/, '').replace(/\/$/, '')
+    mlApiUrl = `${baseUrl}/recommendations`
   } else {
     // Fallback to separate base URL and endpoint
     const mlApiBaseUrl = process.env.ML_API_BASE_URL || 'https://ml-recommendations-api.onrender.com'
-    const mlApiEndpoint = process.env.ML_API_ENDPOINT || '/api/predict'
-    mlApiUrl = `${mlApiBaseUrl}${mlApiEndpoint}`
+    mlApiUrl = `${mlApiBaseUrl}/recommendations`
   }
   const timeoutDuration = Number(process.env.ML_API_TIMEOUT_MS ?? 4000)
   const controller = new AbortController()
@@ -143,6 +143,7 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
 
   let response: Response
   try {
+    console.log(`🔗 Calling ML API recommendations at: ${mlApiUrl}`)
     response = await fetch(mlApiUrl, {
       method: 'POST',
       headers: {
@@ -155,16 +156,20 @@ async function getMLRecommendations(testAttempts: any[]): Promise<StudyRecommend
       signal: controller.signal
     })
   } catch (error) {
+    clearTimeout(timeoutId)
     if (error instanceof Error && error.name === 'AbortError') {
+      console.error(`⏱️ ML API request timed out after ${timeoutDuration}ms`)
       throw new Error(`ML API request timed out after ${timeoutDuration}ms`)
     }
+    console.error('❌ ML API request failed:', error)
     throw error
-  } finally {
-    clearTimeout(timeoutId)
   }
+  clearTimeout(timeoutId)
 
   if (!response.ok) {
-    throw new Error(`ML API returned ${response.status}`)
+    const errorText = await response.text()
+    console.error(`❌ ML API error (${response.status}):`, errorText)
+    throw new Error(`ML API returned ${response.status}: ${errorText}`)
   }
 
   const mlData = await response.json()

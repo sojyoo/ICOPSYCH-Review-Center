@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
     let mlStatus = 'unavailable'
 
     try {
+      console.log(`🔗 Calling ML API at: ${mlApiUrl}`)
       const response = await fetch(mlApiUrl, {
         method: 'POST',
         headers: {
@@ -73,14 +74,19 @@ export async function GET(request: NextRequest) {
       if (response.ok) {
         mlPrediction = await response.json()
         mlStatus = 'available'
+        console.log('✅ ML API response successful:', mlPrediction)
       } else {
+        const errorText = await response.text()
+        console.error(`❌ ML API error (${response.status}):`, errorText)
         mlStatus = 'error'
       }
     } catch (error) {
       clearTimeout(timeoutId)
       if (error instanceof Error && error.name === 'AbortError') {
+        console.error('⏱️ ML API timeout after', timeoutDuration, 'ms')
         mlStatus = 'timeout'
       } else {
+        console.error('❌ ML API request failed:', error)
         mlStatus = 'error'
       }
     }
