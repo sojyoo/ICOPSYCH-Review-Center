@@ -154,7 +154,6 @@ export default function DashboardPage() {
     { id: "daily-study", label: "Today's Plan", icon: Clock },
     { id: "study-sessions", label: "Study Sessions", icon: Clock },
     { id: "schedule", label: "Schedule", icon: Calendar },
-    { id: "tests", label: "Tests", icon: Target },
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
@@ -288,7 +287,6 @@ export default function DashboardPage() {
               />
             )}
             {activeTab === 'schedule' && <ScheduleContent currentWeek={currentWeek} userStats={userStats} />}
-            {activeTab === 'tests' && <TestsContent currentWeek={currentWeek} />}
             {activeTab === 'progress' && <ProgressContent userStats={userStats} />}
             {activeTab === 'study-plan' && <StudyPlanContent recommendations={recommendations} />}
             {activeTab === 'calendar' && <CalendarContent currentWeek={currentWeek} />}
