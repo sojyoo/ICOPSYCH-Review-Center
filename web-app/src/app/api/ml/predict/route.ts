@@ -78,14 +78,31 @@ export async function GET(request: NextRequest) {
         mlStatus = 'available'
         console.log('✅ ML API response successful:', mlPrediction)
       } else {
-        const errorText = await response.text()
+        let errorText: string
+        try {
+          const errorJson = await response.json()
+          errorText = JSON.stringify(errorJson)
+        } catch {
+          errorText = await response.text()
+        }
         console.error(`❌ ML API error (${response.status}):`, errorText)
         console.error(`❌ Full error details:`, {
           status: response.status,
           statusText: response.statusText,
           url: mlApiUrl,
-          errorText: errorText.substring(0, 500) // Limit error text length
+          headers: Object.fromEntries(response.headers.entries()),
+          errorText: errorText.substring(0, 1000) // Limit error text length
         })
+        
+        // If it's a 503, the model might not be loaded
+        if (response.status === 503) {
+          console.error('❌ Model not loaded on Render. Check Render logs for model loading errors.')
+        }
+        // If it's a 404, the endpoint might be wrong
+        if (response.status === 404) {
+          console.error('❌ Endpoint not found. Check if /api/predict exists on Render.')
+        }
+        
         mlStatus = 'error'
       }
     } catch (error) {
