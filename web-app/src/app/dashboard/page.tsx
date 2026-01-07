@@ -20,7 +20,6 @@ import {
   Brain,
   FileText,
   Settings,
-  HelpCircle,
   UserPlus
 } from 'lucide-react'
 import { ICOPSYCH_SCHEDULE, getCurrentWeek, getWeekByNumber } from '@/lib/schedule'
@@ -158,8 +157,7 @@ export default function DashboardPage() {
     { id: "study-plan", label: "Study Plan", icon: BookOpen },
     { id: "calendar", label: "Calendar", icon: Clock },
     { id: "preferences", label: "Preferences", icon: Settings },
-    { id: "features", label: "ML Features", icon: Brain },
-    { id: "help", label: "Help", icon: HelpCircle }
+    { id: "features", label: "ML Features", icon: Brain }
   ]
 
   if (status === 'loading' || loading) {
@@ -303,7 +301,6 @@ export default function DashboardPage() {
               />
             )}
             {activeTab === 'features' && <FeatureDisplay />}
-            {activeTab === 'help' && <HelpContent />}
           </div>
         </div>
       </div>
