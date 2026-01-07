@@ -173,17 +173,65 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Safety override: If overall score is very low (< 10), force high risk regardless of ML prediction
-    // This prevents cases where low scores incorrectly get low risk predictions
-    if (featureVector.overall_avg_score < 10 && mlPrediction.riskLevel !== 'high') {
-      console.log(`⚠️ Safety override: Overall score is ${featureVector.overall_avg_score} (< 10), forcing high risk. ML predicted: ${mlPrediction.riskLevel}`)
+    // CRITICAL: Test scores are the PRIMARY risk indicator
+    // Override ML prediction based on actual test performance
+    // This ensures test scores take precedence over study habits or other features
+    const overallScore = featureVector.overall_avg_score
+    const testedSubjectsCount = testAttempts.length > 0 ? 
+      Object.keys(featureVector).filter(k => k.includes('_score') && 
+        (featureVector[k as keyof typeof featureVector] as number) < 24.9).length : 0
+    
+    // Strong overrides based on test performance (primary factor)
+    if (overallScore < 10) {
+      // Very low score (< 10/30 = < 33%) = HIGH RISK
+      console.log(`🚨 CRITICAL: Overall score is ${overallScore.toFixed(2)} (< 10). Overriding to HIGH risk. ML predicted: ${mlPrediction.riskLevel}`)
       mlPrediction = {
         ...mlPrediction,
         riskLevel: 'high',
         riskProbabilities: {
-          high: 0.8,
-          medium: 0.15,
-          low: 0.05
+          high: 0.9,
+          medium: 0.08,
+          low: 0.02
+        }
+      }
+    } else if (overallScore < 15) {
+      // Low score (10-15/30 = 33-50%) = HIGH RISK
+      console.log(`⚠️ Overall score is ${overallScore.toFixed(2)} (< 15). Overriding to HIGH risk. ML predicted: ${mlPrediction.riskLevel}`)
+      if (mlPrediction.riskLevel !== 'high') {
+        mlPrediction = {
+          ...mlPrediction,
+          riskLevel: 'high',
+          riskProbabilities: {
+            high: 0.85,
+            medium: 0.12,
+            low: 0.03
+          }
+        }
+      }
+    } else if (overallScore < 20) {
+      // Below average (15-20/30 = 50-67%) = HIGH RISK
+      console.log(`⚠️ Overall score is ${overallScore.toFixed(2)} (< 20). Overriding to HIGH risk. ML predicted: ${mlPrediction.riskLevel}`)
+      if (mlPrediction.riskLevel !== 'high') {
+        mlPrediction = {
+          ...mlPrediction,
+          riskLevel: 'high',
+          riskProbabilities: {
+            high: 0.75,
+            medium: 0.2,
+            low: 0.05
+          }
+        }
+      }
+    } else if (overallScore >= 26 && mlPrediction.riskLevel === 'high') {
+      // High score (>= 26/30 = >= 87%) should not be high risk
+      console.log(`✅ Overall score is ${overallScore.toFixed(2)} (>= 26). Overriding HIGH risk to MEDIUM. ML predicted: high`)
+      mlPrediction = {
+        ...mlPrediction,
+        riskLevel: 'medium',
+        riskProbabilities: {
+          high: 0.2,
+          medium: 0.7,
+          low: 0.1
         }
       }
     }
@@ -257,10 +305,36 @@ async function calculateFeatureVector(testAttempts: any[], preferences: any) {
     }
   })
 
-  features.abnormal_psych_score = calculateAverage(subjectScores['Abnormal Psychology'] || []) || 24.0
-  features.developmental_psych_score = calculateAverage(subjectScores['Developmental Psychology'] || []) || 24.0
-  features.industrial_psych_score = calculateAverage(subjectScores['Industrial Psychology'] || []) || 24.0
-  features.psychological_assessment_score = calculateAverage(subjectScores['Psychological Assessment'] || []) || 24.0
+  // Calculate subject scores - get actual averages
+  const abnormalAvg = calculateAverage(subjectScores['Abnormal Psychology'] || [])
+  const developmentalAvg = calculateAverage(subjectScores['Developmental Psychology'] || [])
+  const industrialAvg = calculateAverage(subjectScores['Industrial Psychology'] || [])
+  const assessmentAvg = calculateAverage(subjectScores['Psychological Assessment'] || [])
+
+  // CRITICAL: Calculate overall_avg_score ONLY from subjects with actual test data
+  // This prevents default values (24.0) from masking poor performance
+  // If a student gets 10% in one subject, that should be reflected, not averaged with 24.0 defaults
+  const testedSubjects: number[] = []
+  if (abnormalAvg !== null) testedSubjects.push(abnormalAvg)
+  if (developmentalAvg !== null) testedSubjects.push(developmentalAvg)
+  if (industrialAvg !== null) testedSubjects.push(industrialAvg)
+  if (assessmentAvg !== null) testedSubjects.push(assessmentAvg)
+
+  if (testedSubjects.length > 0) {
+    // Use ONLY tested subjects for overall average - this is the PRIMARY risk indicator
+    features.overall_avg_score = testedSubjects.reduce((a, b) => a + b, 0) / testedSubjects.length
+    console.log(`📊 Overall score calculated from ${testedSubjects.length} tested subjects: ${features.overall_avg_score.toFixed(2)} (subjects: ${testedSubjects.map(s => s.toFixed(2)).join(', ')})`)
+  } else {
+    // No test data - use neutral default
+    features.overall_avg_score = 25.0
+  }
+
+  // For ML model, still send all subject scores (use defaults for untested subjects)
+  // But risk determination will prioritize overall_avg_score from tested subjects only
+  features.abnormal_psych_score = abnormalAvg ?? 25.0
+  features.developmental_psych_score = developmentalAvg ?? 25.0
+  features.industrial_psych_score = industrialAvg ?? 25.0
+  features.psychological_assessment_score = assessmentAvg ?? 25.0
 
   const allSubjectAverages = [
     features.abnormal_psych_score,
@@ -268,8 +342,6 @@ async function calculateFeatureVector(testAttempts: any[], preferences: any) {
     features.industrial_psych_score,
     features.psychological_assessment_score
   ]
-
-  features.overall_avg_score = allSubjectAverages.reduce((a, b) => a + b, 0) / allSubjectAverages.length
 
   // Score consistency
   const mean = features.overall_avg_score
