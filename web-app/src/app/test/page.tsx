@@ -37,8 +37,8 @@ interface TestState {
 }
 
 const getTestDuration = (testType: string) => {
-  // 10 minutes (600s) for regular tests, 2 hours (7200s) for mock exam
-  return testType === 'mock-exam' ? 7200 : 600
+  // 20 minutes (1200s) for regular tests (20 questions), 2 hours (7200s) for mock exam
+  return testType === 'mock-exam' ? 7200 : 1200
 }
 
 function TestPageContent() {
@@ -49,7 +49,7 @@ function TestPageContent() {
     questions: [],
     currentPage: 0,
     answers: {},
-    timeRemaining: 600, // default 10 minutes
+    timeRemaining: 1200, // default 20 minutes (for 20 questions)
     testType: '',
     weekNumber: 0,
     lecture: 0,
@@ -61,7 +61,7 @@ function TestPageContent() {
   const [accessDenied, setAccessDenied] = useState(false)
   const [accessMessage, setAccessMessage] = useState<string>('')
   const [testStartTime, setTestStartTime] = useState<Date | null>(null)
-  const [testDuration, setTestDuration] = useState<number>(600) // Store the total duration
+  const [testDuration, setTestDuration] = useState<number>(1200) // Store the total duration (20 minutes for 20 questions)
 
   useEffect(() => {
     console.log('🔍 Test page - Session status:', { status, hasSession: !!session, userId: session?.user?.id })

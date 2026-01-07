@@ -45,39 +45,32 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
     const isDevPsychWeekOne =
       week === 1 && normalizedSubjects.some((subject) => subject.includes('developmental'))
 
-    if (isDevPsychWeekOne && (type === 'pre-test' || type === 'post-test')) {
-      const preSubset = devPsychPre.questions.slice(0, 10)
-      const postSubset = preSubset.map((preQuestion) => {
-        const match = devPsychPost.questions.find(
-          (postQuestion) => postQuestion.question.trim() === preQuestion.question.trim()
-        )
-        return match || preQuestion
-      })
-
-      const bank = type === 'pre-test' ? preSubset : postSubset
-
-      const staticQuestions = bank.map((question: any, index) => ({
-        id: `dev-psych-${type}-${index + 1}`,
-        question: question.question,
-        options: question.options,
-        correctIndex: question.correctIndex,
-        subject: question.subject || 'Developmental Psychology',
-        difficulty: 'standard',
-        explanation: question.explanation || '',
-        week: question.week || 1,
-        lecture: question.lecture || 1,
-      }))
-
-      return staticQuestions
-    }
+    // Note: Overriding special case - all tests now use comprehensive 20-question format
+    // This ensures all tests cover all 4 core subjects for better risk assessment
+    // The special DevPsych Week 1 case is now handled by the main database query below
 
     const { prisma } = await import('@/lib/prisma')
 
     // Build the where clause for filtering
     const whereClause: any = {}
     
-    // Filter by subjects if provided
-    if (subjects.length > 0) {
+    // For pre-test and post-test: Always include all 4 core subjects regardless of week/topic
+    // This ensures comprehensive assessment across all subject areas
+    const coreSubjects = [
+      'Abnormal Psychology',
+      'Developmental Psychology',
+      'Industrial Psychology',
+      'Psychological Assessment'
+    ]
+    
+    if (type === 'pre-test' || type === 'post-test') {
+      // Override subjects to always include all core subjects
+      whereClause.subject = {
+        in: coreSubjects
+      }
+      console.log('📚 Overriding subjects to include all core subjects for comprehensive assessment')
+    } else if (subjects.length > 0) {
+      // For mock-exam, use provided subjects
       whereClause.subject = {
         in: subjects
       }
@@ -176,12 +169,62 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       formattedQuestions = uniqueQuestions
     }
 
-    // Limit questions based on test type, but use all available if less than limit
-    const questionLimit = type === 'mock-exam' ? 100 : 10
-    if (type === 'mock-exam') {
+    // Limit questions based on test type
+    // Pre-tests and post-tests now use 20 questions covering all 4 core subjects
+    const questionLimit = type === 'mock-exam' ? 100 : 20
+    
+    // For pre-test and post-test: ensure all 4 core subjects are covered
+    // Distribute 20 questions: 5 questions per subject
+    if (type !== 'mock-exam' && questionLimit === 20) {
+      const coreSubjects = [
+        'Abnormal Psychology',
+        'Developmental Psychology', 
+        'Industrial Psychology',
+        'Psychological Assessment'
+      ]
+      
+      const questionsBySubject: Record<string, typeof formattedQuestions> = {}
+      coreSubjects.forEach(subject => {
+        questionsBySubject[subject] = formattedQuestions.filter(q => 
+          q.subject === subject
+        )
+      })
+      
+      // Shuffle questions within each subject
+      Object.keys(questionsBySubject).forEach(subject => {
+        questionsBySubject[subject] = shuffleArray(questionsBySubject[subject])
+      })
+      
+      // Take 5 questions from each subject (or all available if less than 5)
+      const questionsPerSubject = 5
+      const finalQuestions: typeof formattedQuestions = []
+      
+      coreSubjects.forEach(subject => {
+        const subjectQuestions = questionsBySubject[subject] || []
+        const questionsToTake = Math.min(questionsPerSubject, subjectQuestions.length)
+        finalQuestions.push(...subjectQuestions.slice(0, questionsToTake))
+      })
+      
+      // If we don't have enough questions from core subjects, supplement with any available
+      if (finalQuestions.length < questionLimit) {
+        const remaining = questionLimit - finalQuestions.length
+        const usedQuestionIds = new Set(finalQuestions.map(q => q.id))
+        const additionalQuestions = formattedQuestions
+          .filter(q => !usedQuestionIds.has(q.id))
+          .slice(0, remaining)
+        finalQuestions.push(...additionalQuestions)
+      }
+      
+      // Shuffle the final questions to mix subjects
+      formattedQuestions = shuffleArray(finalQuestions.slice(0, questionLimit))
+    } else if (type === 'mock-exam') {
       formattedQuestions = shuffleArray(formattedQuestions)
+      formattedQuestions = formattedQuestions.slice(0, Math.min(questionLimit, formattedQuestions.length))
+    } else {
+      formattedQuestions = formattedQuestions.slice(0, Math.min(questionLimit, formattedQuestions.length))
     }
-    const finalQuestions = formattedQuestions.slice(0, Math.min(questionLimit, formattedQuestions.length))
+    
+    const finalQuestions = formattedQuestions
 
     // Add warning if not enough questions
     if (finalQuestions.length < questionLimit) {
