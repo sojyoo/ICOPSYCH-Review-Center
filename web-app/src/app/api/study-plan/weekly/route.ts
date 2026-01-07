@@ -167,7 +167,7 @@ async function generateWeeklyStudyPlan(userId: string, weekNumber: number, reque
   let totalAvailableHours = 0
   if (dailyAvailability) {
     const values = Object.values(dailyAvailability) as (string | number)[]
-    totalAvailableHours = values.reduce((sum: number, hours: string | number) => {
+    totalAvailableHours = values.reduce((sum: number, hours: string | number): number => {
       return sum + (parseFloat(String(hours)) || 0)
     }, 0)
   }
