@@ -144,7 +144,7 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
     // Reset the flags when reloadTrigger changes (component remounts)
     if (reloadTrigger !== undefined) {
       hasLoadedOnce.current = false
-      userHasInteracted.current = false
+      // Don't reset userHasInteracted - preserve user's slider positions across tab switches
     }
   }, [reloadTrigger]) // Reload when reloadTrigger changes
 
@@ -227,32 +227,41 @@ export default function UserPreferencesComponent({ onSave, compact = false, show
           confidence: prefs.habitConfidence
         })
         
-        // Initialize habit items from composite scores FIRST
-        // If composite exists, use it for all items; otherwise start at 0 (leftmost)
-        const activeLearningValue = prefs.habitActiveLearning ?? 0
-        const planningValue = prefs.habitPlanning ?? 0
-        const disciplineValue = prefs.habitDiscipline ?? 0
-        
-        const newHabitItems = {
-          activeLearning: {
-            summarizing: activeLearningValue,
-            highlighting: activeLearningValue,
-            conceptMapping: activeLearningValue
-          },
-          planning: {
-            schedule: planningValue,
-            goals: planningValue,
-            planAhead: planningValue
-          },
-          discipline: {
-            procrastination: disciplineValue,
-            immediateReview: disciplineValue,
-            consistency: disciplineValue
+        // Only initialize habit items from composite scores if user hasn't interacted yet
+        // This prevents resetting sliders when user has already set them individually
+        if (!userHasInteracted.current) {
+          // Initialize habit items from composite scores FIRST
+          // If composite exists, use it for all items; otherwise start at 0 (leftmost)
+          const activeLearningValue = prefs.habitActiveLearning ?? 0
+          const planningValue = prefs.habitPlanning ?? 0
+          const disciplineValue = prefs.habitDiscipline ?? 0
+          
+          const newHabitItems = {
+            activeLearning: {
+              summarizing: activeLearningValue,
+              highlighting: activeLearningValue,
+              conceptMapping: activeLearningValue
+            },
+            planning: {
+              schedule: planningValue,
+              goals: planningValue,
+              planAhead: planningValue
+            },
+            discipline: {
+              procrastination: disciplineValue,
+              immediateReview: disciplineValue,
+              consistency: disciplineValue
+            }
           }
+          
+          // Set habit items only if user hasn't interacted
+          setHabitItems(newHabitItems)
+          console.log('📥 Initialized habitItems from composite scores (first load):', newHabitItems)
+        } else {
+          console.log('📥 Skipping habitItems reset - user has already interacted with sliders')
         }
         
-        // Set both states together
-        setHabitItems(newHabitItems)
+        // Always update preferences (for composite scores and other fields)
         setPreferences(prefs)
         hasLoadedOnce.current = true // Mark that we've loaded preferences
         
