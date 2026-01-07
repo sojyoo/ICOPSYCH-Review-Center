@@ -234,6 +234,7 @@ async function calculateFeatureVector(testAttempts: any[], preferences: any) {
     const sorted = [...subjectAverages].sort((a, b) => a.score - b.score)
     // Note: weakest_subject and strongest_subject are not included in the feature vector
     // as they are strings, not numeric features. The ML model only uses numeric features.
+    // Only numeric features are included in the feature vector for the ML API.
     features.score_range = sorted[sorted.length - 1].score - sorted[0].score
   }
 
