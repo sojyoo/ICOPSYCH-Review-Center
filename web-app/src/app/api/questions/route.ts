@@ -32,7 +32,18 @@ export async function GET(request: NextRequest) {
     // Load questions from the MACALALAY folder
     const questions = await loadQuestions(week, lecture, subjects, type)
     
-    return NextResponse.json({ questions })
+    // Add debug info in response for pre-test/post-test
+    const response: any = { questions }
+    if (type === 'pre-test' || type === 'post-test') {
+      response.debug = {
+        questionCount: questions.length,
+        expectedCount: 30,
+        hasEnoughQuestions: questions.length >= 30,
+        subjectsInResponse: [...new Set(questions.map((q: any) => q.subject))]
+      }
+    }
+    
+    return NextResponse.json(response)
   } catch (error) {
     console.error("Error loading questions:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

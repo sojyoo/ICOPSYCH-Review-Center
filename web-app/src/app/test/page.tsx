@@ -196,6 +196,15 @@ function TestPageContent() {
         console.log(`📝 Loaded ${questions.length} questions for ${type}`)
         console.log('🔍 Question data:', data)
         
+        // Log debug info if available (for pre-test/post-test)
+        if (data.debug) {
+          console.log('🔍 DEBUG INFO:', data.debug)
+          if (data.debug.questionCount !== 30) {
+            console.error(`❌ ERROR: Expected 30 questions but got ${data.debug.questionCount}`)
+            console.error(`❌ Subjects in response:`, data.debug.subjectsInResponse)
+          }
+        }
+        
         if (questions.length === 0) {
           console.warn('⚠️ No questions returned from API')
         }
