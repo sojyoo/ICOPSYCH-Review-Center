@@ -6,9 +6,17 @@ import { prisma } from '@/lib/prisma'
 /**
  * One-time admin setup endpoint
  * Protected by ADMIN_SETUP_SECRET environment variable
- * Call: POST /api/admin/setup?secret=YOUR_SECRET
+ * Call: GET or POST /api/admin/setup?secret=YOUR_SECRET
  */
+export async function GET(request: NextRequest) {
+  return handleSetup(request)
+}
+
 export async function POST(request: NextRequest) {
+  return handleSetup(request)
+}
+
+async function handleSetup(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const secret = searchParams.get('secret')
