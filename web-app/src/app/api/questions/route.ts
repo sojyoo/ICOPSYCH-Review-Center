@@ -112,9 +112,18 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       orderBy: {
         id: 'asc'
       }
+      // NO LIMIT - we want all matching questions
     })
     
     console.log(`📊 Found ${questions.length} questions from database query`)
+    console.log(`📊 Where clause used:`, JSON.stringify(whereClause, null, 2))
+    
+    // For pre-test/post-test, verify we're getting questions from all core subjects
+    if (type === 'pre-test' || type === 'post-test') {
+      const subjectsFound = [...new Set(questions.map(q => q.subject))]
+      console.log(`📊 Subjects found in query results:`, subjectsFound)
+      console.log(`📊 Expected core subjects:`, coreSubjects)
+    }
 
     console.log(`🔍 Found ${questions.length} questions for subjects: ${subjects.join(', ')}`)
 
