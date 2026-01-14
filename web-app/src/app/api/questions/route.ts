@@ -204,7 +204,13 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
         questionsBySubject[subject] = formattedQuestions
           .filter(q => q.subject === subject)
           .sort((a, b) => a.id.localeCompare(b.id))
+        console.log(`📚 Found ${questionsBySubject[subject].length} questions for ${subject}`)
       })
+      
+      // Log all unique subjects found in formattedQuestions
+      const allSubjectsFound = [...new Set(formattedQuestions.map(q => q.subject))]
+      console.log(`📚 All subjects found in database:`, allSubjectsFound)
+      console.log(`📚 Total questions available: ${formattedQuestions.length}`)
       
       // Distribute 30 questions: 7, 8, 8, 7 per subject
       const questionsPerSubject = [7, 8, 8, 7]
@@ -213,8 +219,11 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       coreSubjects.forEach((subject, index) => {
         const subjectQuestions = questionsBySubject[subject] || []
         const questionsToTake = Math.min(questionsPerSubject[index], subjectQuestions.length)
+        console.log(`📚 Selecting ${questionsToTake} questions from ${subject} (available: ${subjectQuestions.length}, requested: ${questionsPerSubject[index]})`)
         selectedQuestions.push(...subjectQuestions.slice(0, questionsToTake))
       })
+      
+      console.log(`📚 Selected ${selectedQuestions.length} questions from core subjects (target: ${questionLimit})`)
       
       // If we don't have enough questions from core subjects, supplement with any available
       if (selectedQuestions.length < questionLimit) {
@@ -224,14 +233,31 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
           .filter(q => !usedQuestionIds.has(q.id))
           .sort((a, b) => a.id.localeCompare(b.id))
           .slice(0, remaining)
+        console.log(`📚 Supplementing with ${additionalQuestions.length} additional questions to reach ${questionLimit}`)
         selectedQuestions.push(...additionalQuestions)
       }
       
+      console.log(`📚 Total selected after supplementation: ${selectedQuestions.length}`)
+      
       // Ensure we have exactly 30 questions (or as many as available)
-      const finalSelectedQuestions = selectedQuestions.slice(0, Math.min(questionLimit, selectedQuestions.length))
+      // If we still don't have enough, take from ALL available questions regardless of subject
+      let finalSelectedQuestions = selectedQuestions.slice(0, Math.min(questionLimit, selectedQuestions.length))
+      
+      if (finalSelectedQuestions.length < questionLimit && formattedQuestions.length >= questionLimit) {
+        console.log(`⚠️ Only have ${finalSelectedQuestions.length} questions from core subjects, taking from all available questions`)
+        const usedQuestionIds = new Set(finalSelectedQuestions.map(q => q.id))
+        const allAvailable = formattedQuestions
+          .filter(q => !usedQuestionIds.has(q.id))
+          .sort((a, b) => a.id.localeCompare(b.id))
+          .slice(0, questionLimit - finalSelectedQuestions.length)
+        finalSelectedQuestions = [...finalSelectedQuestions, ...allAvailable]
+        console.log(`📚 Now have ${finalSelectedQuestions.length} questions total`)
+      }
       
       // Sort by ID to ensure deterministic selection (same questions for both pre-test and post-test)
       const sortedByID = finalSelectedQuestions.sort((a, b) => a.id.localeCompare(b.id))
+      
+      console.log(`📚 Final selection: ${sortedByID.length} questions (target: ${questionLimit})`)
       
       // For pre-test: use questions in sorted order
       // For post-test: use the SAME questions but shuffle the order
