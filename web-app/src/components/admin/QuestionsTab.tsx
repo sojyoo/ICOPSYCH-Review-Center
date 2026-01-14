@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Search, Edit, Trash2, Filter } from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Filter, Upload, Loader2 } from 'lucide-react'
 import { getSuggestedSubjectForWeek, getLectureForWeek } from '@/lib/week-subject-mapping'
 
 interface Question {
@@ -34,6 +34,8 @@ export default function QuestionsTab() {
     lecture: '',
     week: ''
   })
+  const [isImporting, setIsImporting] = useState(false)
+  const [importStatus, setImportStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null)
 
   useEffect(() => {
     loadQuestions()
@@ -87,6 +89,43 @@ export default function QuestionsTab() {
   const handleCreate = () => {
     setEditingQuestion(null)
     setShowModal(true)
+  }
+
+  const handleImportQuestions = async () => {
+    if (!confirm('This will import all questions from questions.json. Existing questions will be updated. Continue?')) {
+      return
+    }
+
+    setIsImporting(true)
+    setImportStatus(null)
+
+    try {
+      const response = await fetch('/api/admin/import-questions', {
+        method: 'POST'
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Import failed')
+      }
+
+      const result = await response.json()
+      setImportStatus({
+        type: 'success',
+        message: `Successfully imported ${result.imported} new questions and updated ${result.updated} existing questions. Total: ${result.total} questions.`
+      })
+      
+      // Reload questions list
+      loadQuestions()
+    } catch (error) {
+      console.error('Import error:', error)
+      setImportStatus({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to import questions'
+      })
+    } finally {
+      setIsImporting(false)
+    }
   }
 
   const handleSave = async (questionData: any) => {
@@ -143,14 +182,44 @@ export default function QuestionsTab() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-900">Question Management</h2>
-        <button
-          onClick={handleCreate}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Add Question
-        </button>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={handleImportQuestions}
+            disabled={isImporting}
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isImporting ? (
+              <>
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <Upload className="h-5 w-5 mr-2" />
+                Import from JSON
+              </>
+            )}
+          </button>
+          <button
+            onClick={handleCreate}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Add Question
+          </button>
+        </div>
       </div>
+
+      {/* Import Status */}
+      {importStatus && (
+        <div className={`mb-4 p-4 rounded-md ${
+          importStatus.type === 'success' 
+            ? 'bg-green-50 border border-green-200 text-green-800' 
+            : 'bg-red-50 border border-red-200 text-red-800'
+        }`}>
+          <p className="text-sm">{importStatus.message}</p>
+        </div>
+      )}
 
       {/* Search and Filters */}
       <div className="mb-6 space-y-4">
