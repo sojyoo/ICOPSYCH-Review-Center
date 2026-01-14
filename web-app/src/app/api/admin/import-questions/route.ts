@@ -53,21 +53,40 @@ export async function POST(request: NextRequest) {
     }
 
     // Read the questions JSON file
-    const questionsPath = path.join(process.cwd(), '..', '..', 'public', 'questions.json')
+    // Try fetching from public URL first (for Vercel), then fallback to file system
     let questionsData
     
     try {
-      questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'))
-    } catch (error) {
-      // Try alternative path (for Vercel deployment)
-      const altPath = path.join(process.cwd(), 'public', 'questions.json')
+      // Try fetching from public URL (works in Vercel)
+      const baseUrl = process.env.NEXTAUTH_URL || request.headers.get('origin') || 'http://localhost:3000'
+      const questionsUrl = `${baseUrl}/questions.json`
+      const response = await fetch(questionsUrl)
+      
+      if (response.ok) {
+        questionsData = await response.json()
+        console.log(`✅ Loaded questions from URL: ${questionsUrl}`)
+      } else {
+        throw new Error(`Failed to fetch from URL: ${response.status}`)
+      }
+    } catch (urlError) {
+      // Fallback to file system (for local development)
+      console.log('⚠️ Failed to fetch from URL, trying file system...')
       try {
-        questionsData = JSON.parse(fs.readFileSync(altPath, 'utf8'))
-      } catch (altError) {
-        return NextResponse.json({ 
-          error: "Could not find questions.json file",
-          details: `Tried: ${questionsPath} and ${altPath}`
-        }, { status: 404 })
+        const questionsPath = path.join(process.cwd(), '..', '..', 'public', 'questions.json')
+        questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'))
+        console.log(`✅ Loaded questions from file: ${questionsPath}`)
+      } catch (fileError) {
+        // Try alternative path
+        const altPath = path.join(process.cwd(), 'public', 'questions.json')
+        try {
+          questionsData = JSON.parse(fs.readFileSync(altPath, 'utf8'))
+          console.log(`✅ Loaded questions from file: ${altPath}`)
+        } catch (altError) {
+          return NextResponse.json({ 
+            error: "Could not load questions.json",
+            details: `URL error: ${urlError}, File errors: ${fileError}, ${altError}`
+          }, { status: 404 })
+        }
       }
     }
     
