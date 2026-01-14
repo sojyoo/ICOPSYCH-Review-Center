@@ -53,41 +53,71 @@ export async function POST(request: NextRequest) {
     }
 
     // Read the questions JSON file
-    // Try fetching from public URL first (for Vercel), then fallback to file system
+    // In Vercel, public files are served from the root, so we need to fetch via HTTP
     let questionsData
     
     try {
-      // Try fetching from public URL (works in Vercel)
-      const baseUrl = process.env.NEXTAUTH_URL || request.headers.get('origin') || 'http://localhost:3000'
-      const questionsUrl = `${baseUrl}/questions.json`
-      const response = await fetch(questionsUrl)
-      
-      if (response.ok) {
-        questionsData = await response.json()
-        console.log(`✅ Loaded questions from URL: ${questionsUrl}`)
-      } else {
-        throw new Error(`Failed to fetch from URL: ${response.status}`)
+      // Get the base URL - try multiple sources
+      let baseUrl = process.env.NEXTAUTH_URL
+      if (!baseUrl) {
+        const origin = request.headers.get('origin')
+        const host = request.headers.get('host')
+        if (origin) {
+          baseUrl = origin
+        } else if (host) {
+          baseUrl = `https://${host}`
+        } else {
+          baseUrl = 'https://icopsych-review-center.vercel.app'
+        }
       }
+      
+      // Remove trailing slash
+      baseUrl = baseUrl.replace(/\/$/, '')
+      const questionsUrl = `${baseUrl}/questions.json`
+      
+      console.log(`🔍 Attempting to fetch questions from: ${questionsUrl}`)
+      
+      const response = await fetch(questionsUrl, {
+        cache: 'no-store' // Ensure we get fresh data
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+      
+      questionsData = await response.json()
+      console.log(`✅ Successfully loaded ${questionsData?.length || 0} questions from URL`)
+      
     } catch (urlError) {
-      // Fallback to file system (for local development)
-      console.log('⚠️ Failed to fetch from URL, trying file system...')
+      console.error('❌ Failed to fetch from URL:', urlError)
+      
+      // Fallback to file system (for local development only)
       try {
+        console.log('⚠️ Trying file system fallback...')
         const questionsPath = path.join(process.cwd(), '..', '..', 'public', 'questions.json')
         questionsData = JSON.parse(fs.readFileSync(questionsPath, 'utf8'))
         console.log(`✅ Loaded questions from file: ${questionsPath}`)
       } catch (fileError) {
         // Try alternative path
-        const altPath = path.join(process.cwd(), 'public', 'questions.json')
         try {
+          const altPath = path.join(process.cwd(), 'public', 'questions.json')
           questionsData = JSON.parse(fs.readFileSync(altPath, 'utf8'))
           console.log(`✅ Loaded questions from file: ${altPath}`)
         } catch (altError) {
           return NextResponse.json({ 
             error: "Could not load questions.json",
-            details: `URL error: ${urlError}, File errors: ${fileError}, ${altError}`
+            details: `URL fetch failed: ${urlError instanceof Error ? urlError.message : String(urlError)}. File system also failed.`,
+            suggestion: "Make sure questions.json exists in the public folder and is accessible via /questions.json"
           }, { status: 404 })
         }
       }
+    }
+    
+    if (!questionsData || !Array.isArray(questionsData)) {
+      return NextResponse.json({ 
+        error: "Invalid questions.json format",
+        details: "Expected an array of questions"
+      }, { status: 400 })
     }
     
     console.log(`\n📋 Found ${questionsData.length} questions to import\n`)
