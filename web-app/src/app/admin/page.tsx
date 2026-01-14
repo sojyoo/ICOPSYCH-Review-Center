@@ -9,13 +9,15 @@ import {
   Users, 
   BarChart3,
   Shield,
-  LogOut
+  LogOut,
+  Download
 } from 'lucide-react'
 import QuestionsTab from '@/components/admin/QuestionsTab'
 import UsersTab from '@/components/admin/UsersTab'
 import CohortsTab from '@/components/admin/CohortsTab'
 import AnalyticsTab from '@/components/admin/AnalyticsTab'
 import TestSettingsTab from '@/components/admin/TestSettingsTab'
+import ExportTab from '@/components/admin/ExportTab'
 
 export default function AdminPage() {
   const { data: session, status } = useSession()
@@ -53,7 +55,8 @@ export default function AdminPage() {
     { id: 'users', label: 'Users', icon: Users },
     { id: 'cohorts', label: 'Cohorts', icon: Users },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'test-settings', label: 'Test Settings', icon: Settings }
+    { id: 'test-settings', label: 'Test Settings', icon: Settings },
+    { id: 'export', label: 'Export Data', icon: Download }
   ]
 
   return (
@@ -121,6 +124,7 @@ export default function AdminPage() {
           {activeTab === 'cohorts' && <CohortsTab />}
           {activeTab === 'analytics' && <AnalyticsTab />}
           {activeTab === 'test-settings' && <TestSettingsTab />}
+          {activeTab === 'export' && <ExportTab />}
         </div>
       </div>
     </div>
