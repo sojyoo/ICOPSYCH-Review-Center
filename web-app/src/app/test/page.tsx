@@ -268,15 +268,22 @@ function TestPageContent() {
       return
     }
     
-    // Check if all questions are answered
+    // Check if all questions are answered - REQUIRED for pre-test and post-test
     const unansweredQuestions = testState.questions.filter(
       q => testState.answers[q.id] === undefined
     )
     
     if (unansweredQuestions.length > 0) {
-      const confirmMessage = `You have ${unansweredQuestions.length} unanswered question(s). Are you sure you want to submit the test?`
-      if (!confirm(confirmMessage)) {
+      if (testState.testType === 'pre-test' || testState.testType === 'post-test') {
+        // For pre-test and post-test, require all questions to be answered
+        alert(`Please answer all ${unansweredQuestions.length} remaining question(s) before submitting the test.`)
         return
+      } else {
+        // For other test types, allow submission with confirmation
+        const confirmMessage = `You have ${unansweredQuestions.length} unanswered question(s). Are you sure you want to submit the test?`
+        if (!confirm(confirmMessage)) {
+          return
+        }
       }
     }
     

@@ -138,11 +138,10 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
 
     console.log(`🔍 After removing duplicates: ${uniqueQuestions.length} unique questions`)
 
-    // If we don't have enough unique questions for the requested subjects, 
-    // supplement with questions from all subjects
+    // For pre-test and post-test, always ensure we have enough questions from all subjects
     const minQuestionsNeeded = (type === 'pre-test' || type === 'post-test') ? 30 : 20
-    if (uniqueQuestions.length < minQuestionsNeeded && type !== 'mock-exam') {
-      console.log('📚 Not enough unique questions, supplementing with all subjects...')
+    if ((type === 'pre-test' || type === 'post-test') || (uniqueQuestions.length < minQuestionsNeeded && type !== 'mock-exam')) {
+      console.log('📚 Loading questions from all subjects to ensure sufficient coverage...')
       
       const allQuestions = await prisma.question.findMany({
         orderBy: { id: 'asc' }
@@ -157,23 +156,30 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
         difficulty: q.difficulty,
         explanation: q.explanation,
         week: q.week,
-        lecture: q.lecture
+        lecture: q.lecture,
+        verification: { expected: true } // Add verification property
       }))
       
       const allUniqueQuestions = allFormattedQuestions.filter((question, index, self) => 
         index === self.findIndex(q => q.question === question.question)
       )
       
-      // Combine with original questions, prioritizing the requested subjects
-      const combinedQuestions = [...uniqueQuestions]
-      allUniqueQuestions.forEach(q => {
-        if (!combinedQuestions.find(existing => existing.question === q.question)) {
-          combinedQuestions.push(q)
-        }
-      })
-      
-      console.log(`📚 Combined questions: ${combinedQuestions.length} total`)
-      formattedQuestions = combinedQuestions
+      // For pre-test/post-test, use all unique questions (we'll select 30 from them)
+      // For other tests, combine with original questions
+      if (type === 'pre-test' || type === 'post-test') {
+        formattedQuestions = allUniqueQuestions
+        console.log(`📚 Loaded ${formattedQuestions.length} total unique questions from database for ${type}`)
+      } else {
+        // Combine with original questions, prioritizing the requested subjects
+        const combinedQuestions = [...uniqueQuestions]
+        allUniqueQuestions.forEach(q => {
+          if (!combinedQuestions.find(existing => existing.question === q.question)) {
+            combinedQuestions.push(q)
+          }
+        })
+        console.log(`📚 Combined questions: ${combinedQuestions.length} total`)
+        formattedQuestions = combinedQuestions
+      }
     } else {
       formattedQuestions = uniqueQuestions
     }
@@ -246,7 +252,18 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
 
     // Add warning if not enough questions
     if (finalQuestions.length < questionLimit) {
-      console.warn(`Only ${finalQuestions.length} questions available for ${type} (requested: ${questionLimit})`)
+      console.warn(`⚠️ Only ${finalQuestions.length} questions available for ${type} (requested: ${questionLimit})`)
+    } else {
+      console.log(`✅ Successfully selected ${finalQuestions.length} questions for ${type} (requested: ${questionLimit})`)
+    }
+
+    // Log question distribution by subject for pre-test/post-test
+    if ((type === 'pre-test' || type === 'post-test') && finalQuestions.length > 0) {
+      const subjectCounts: Record<string, number> = {}
+      finalQuestions.forEach(q => {
+        subjectCounts[q.subject] = (subjectCounts[q.subject] || 0) + 1
+      })
+      console.log(`📊 Question distribution by subject:`, subjectCounts)
     }
 
     console.log(`✅ Returning ${finalQuestions.length} questions for ${type}`)
