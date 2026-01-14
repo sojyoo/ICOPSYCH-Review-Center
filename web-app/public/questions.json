@@ -1,0 +1,2177 @@
+[
+  {
+    "id": "Abnormal Psychology_pre-test_0",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_1",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_2",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_3",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_4",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_0",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_1",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_2",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_3",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_4",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_0",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_1",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_2",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_3",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_4",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_0_15",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_1_16",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_2_17",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_3_18",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_4_19",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_0",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_1",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_2",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_3",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_4",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_0_25",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_1_26",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_2_27",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_3_28",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_pre-test_4_29",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_0_30",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_1_31",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_2_32",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_3_33",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_4_34",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_0_35",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_1_36",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_2_37",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_3_38",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_4_39",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_0_40",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_1_41",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_2_42",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_3_43",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_pre-test_4_44",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_0_45",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_1_46",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_2_47",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_3_48",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_pre-test_4_49",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_0_50",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_1_51",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_2_52",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_3_53",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_pre-test_4_54",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "pre-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_0",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_1",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_2",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_3",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_4",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_0",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_1",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_2",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_3",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_4",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_0_65",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_1_66",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_2_67",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_3_68",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_4_69",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_0",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_1",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_2",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_3",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_4",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_0",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_1",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_2",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_3",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_4",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_0_80",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_1_81",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_2_82",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_3_83",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_4_84",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_0_85",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_1_86",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_2_87",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_3_88",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_4_89",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_0_90",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_1_91",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_2_92",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_3_93",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_4_94",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_0_95",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_1_96",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_2_97",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_3_98",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_4_99",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_0_100",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_1_101",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_2_102",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_3_103",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_4_104",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_0_105",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_1_106",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_2_107",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_3_108",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_4_109",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_0_110",
+    "stem": "What is the primary goal of Industrial Psychology?",
+    "options": [
+      "Treat mental disorders",
+      "Improve workplace productivity and well-being",
+      "Study child development",
+      "Analyze social behavior"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_1_111",
+    "stem": "Which theory suggests that job satisfaction is influenced by hygiene factors and motivators?",
+    "options": [
+      "Maslow's Hierarchy",
+      "Herzberg's Two-Factor Theory",
+      "McGregor's Theory X/Y",
+      "Vroom's Expectancy Theory"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_2_112",
+    "stem": "What is the purpose of job analysis in Industrial Psychology?",
+    "options": [
+      "To fire employees",
+      "To understand job requirements and design",
+      "To increase salaries",
+      "To reduce work hours"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_3_113",
+    "stem": "Which leadership style is characterized by high task and relationship orientation?",
+    "options": [
+      "Laissez-faire",
+      "Authoritarian",
+      "Democratic",
+      "Transformational"
+    ],
+    "correctIndex": 2,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Industrial Psychology_post-test_4_114",
+    "stem": "What does organizational culture refer to?",
+    "options": [
+      "Physical office layout",
+      "Shared values and beliefs",
+      "Employee salaries",
+      "Company size"
+    ],
+    "correctIndex": 1,
+    "subject": "Industrial Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_0_115",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_1_116",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_2_117",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_3_118",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_4_119",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_0_120",
+    "stem": "Which of the following is a characteristic symptom of Major Depressive Disorder?",
+    "options": [
+      "Mania",
+      "Persistent sadness and loss of interest",
+      "Hallucinations",
+      "Compulsive behaviors"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_1_121",
+    "stem": "What is the primary difference between Bipolar I and Bipolar II disorder?",
+    "options": [
+      "Bipolar I has more severe mania",
+      "Bipolar II has more severe depression",
+      "Bipolar I has hypomania",
+      "Bipolar II has full mania"
+    ],
+    "correctIndex": 0,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_2_122",
+    "stem": "Which anxiety disorder is characterized by sudden, intense fear episodes?",
+    "options": [
+      "Generalized Anxiety Disorder",
+      "Panic Disorder",
+      "Social Anxiety Disorder",
+      "Specific Phobia"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_3_123",
+    "stem": "What is the most effective treatment for Obsessive-Compulsive Disorder?",
+    "options": [
+      "Psychoanalysis",
+      "Cognitive Behavioral Therapy",
+      "Group therapy",
+      "Medication only"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Abnormal Psychology_post-test_4_124",
+    "stem": "Which personality disorder is characterized by unstable relationships and self-image?",
+    "options": [
+      "Antisocial Personality Disorder",
+      "Borderline Personality Disorder",
+      "Narcissistic Personality Disorder",
+      "Schizoid Personality Disorder"
+    ],
+    "correctIndex": 1,
+    "subject": "Abnormal Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_0_125",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_1_126",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_2_127",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_3_128",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_4_129",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_0_130",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_1_131",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_2_132",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_3_133",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_4_134",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_0_135",
+    "stem": "According to Piaget, at what stage do children develop object permanence?",
+    "options": [
+      "Sensorimotor",
+      "Preoperational",
+      "Concrete Operational",
+      "Formal Operational"
+    ],
+    "correctIndex": 0,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_1_136",
+    "stem": "What is the primary focus of Erikson's psychosocial development theory?",
+    "options": [
+      "Cognitive development",
+      "Social and emotional development",
+      "Physical development",
+      "Language development"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_2_137",
+    "stem": "Which attachment style is characterized by distress when separated from caregiver?",
+    "options": [
+      "Secure",
+      "Avoidant",
+      "Ambivalent",
+      "Disorganized"
+    ],
+    "correctIndex": 2,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_3_138",
+    "stem": "What is the main criticism of Kohlberg's moral development theory?",
+    "options": [
+      "Too focused on males",
+      "Ignores cultural differences",
+      "Overemphasizes reasoning",
+      "All of the above"
+    ],
+    "correctIndex": 3,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Developmental Psychology_post-test_4_139",
+    "stem": "According to Vygotsky, learning occurs primarily through:",
+    "options": [
+      "Individual discovery",
+      "Social interaction",
+      "Biological maturation",
+      "Trial and error"
+    ],
+    "correctIndex": 1,
+    "subject": "Developmental Psychology",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_0_140",
+    "stem": "What is the difference between reliability and validity?",
+    "options": [
+      "Reliability is consistency, validity is accuracy",
+      "Validity is consistency, reliability is accuracy",
+      "They are the same",
+      "Reliability is more important"
+    ],
+    "correctIndex": 0,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_1_141",
+    "stem": "Which type of validity refers to how well a test measures what it claims to measure?",
+    "options": [
+      "Face validity",
+      "Content validity",
+      "Construct validity",
+      "Criterion validity"
+    ],
+    "correctIndex": 2,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_2_142",
+    "stem": "What is the purpose of standardization in psychological testing?",
+    "options": [
+      "To make tests easier",
+      "To ensure consistent administration and scoring",
+      "To reduce costs",
+      "To increase difficulty"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_3_143",
+    "stem": "Which intelligence test is most commonly used for adults?",
+    "options": [
+      "Stanford-Binet",
+      "Wechsler Adult Intelligence Scale",
+      "Kaufman Assessment Battery",
+      "Woodcock-Johnson"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  },
+  {
+    "id": "Psychological Assessment_post-test_4_144",
+    "stem": "What does a percentile rank of 75 mean?",
+    "options": [
+      "The person scored 75% correct",
+      "The person scored better than 75% of the norm group",
+      "The person failed the test",
+      "The test has 75 questions"
+    ],
+    "correctIndex": 1,
+    "subject": "Psychological Assessment",
+    "testType": "post-test",
+    "difficulty": "medium",
+    "source": "Generated"
+  }
+]
