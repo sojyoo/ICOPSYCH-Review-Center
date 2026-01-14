@@ -45,7 +45,7 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
     const isDevPsychWeekOne =
       week === 1 && normalizedSubjects.some((subject) => subject.includes('developmental'))
 
-    // Note: Overriding special case - all tests now use comprehensive 20-question format
+    // Note: Pre-tests and post-tests use comprehensive 30-question format
     // This ensures all tests cover all 4 core subjects for better risk assessment
     // The special DevPsych Week 1 case is now handled by the main database query below
 
@@ -140,7 +140,8 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
 
     // If we don't have enough unique questions for the requested subjects, 
     // supplement with questions from all subjects
-    if (uniqueQuestions.length < 20 && type !== 'mock-exam') {
+    const minQuestionsNeeded = (type === 'pre-test' || type === 'post-test') ? 30 : 20
+    if (uniqueQuestions.length < minQuestionsNeeded && type !== 'mock-exam') {
       console.log('📚 Not enough unique questions, supplementing with all subjects...')
       
       const allQuestions = await prisma.question.findMany({
@@ -178,12 +179,12 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
     }
 
     // Limit questions based on test type
-    // Pre-tests and post-tests now use 20 questions covering all 4 core subjects
-    const questionLimit = type === 'mock-exam' ? 100 : 20
+    // Pre-tests and post-tests now use 30 questions covering all 4 core subjects
+    const questionLimit = type === 'mock-exam' ? 100 : (type === 'pre-test' || type === 'post-test' ? 30 : 20)
     
     // For pre-test and post-test: ensure all 4 core subjects are covered
-    // Distribute 20 questions: 5 questions per subject
-    if (type !== 'mock-exam' && questionLimit === 20) {
+    // Distribute 30 questions: 7-8 questions per subject (7+8+8+7 = 30)
+    if ((type === 'pre-test' || type === 'post-test') && questionLimit === 30) {
       const coreSubjects = [
         'Abnormal Psychology',
         'Developmental Psychology', 
@@ -193,23 +194,19 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
       
       const questionsBySubject: Record<string, typeof formattedQuestions> = {}
       coreSubjects.forEach(subject => {
-        questionsBySubject[subject] = formattedQuestions.filter(q => 
-          q.subject === subject
-        )
+        // Sort by ID for deterministic selection (same questions every time)
+        questionsBySubject[subject] = formattedQuestions
+          .filter(q => q.subject === subject)
+          .sort((a, b) => a.id.localeCompare(b.id))
       })
       
-      // Shuffle questions within each subject
-      Object.keys(questionsBySubject).forEach(subject => {
-        questionsBySubject[subject] = shuffleArray(questionsBySubject[subject])
-      })
-      
-      // Take 5 questions from each subject (or all available if less than 5)
-      const questionsPerSubject = 5
+      // Distribute 30 questions: 7, 8, 8, 7 per subject
+      const questionsPerSubject = [7, 8, 8, 7]
       const selectedQuestions: typeof formattedQuestions = []
       
-      coreSubjects.forEach(subject => {
+      coreSubjects.forEach((subject, index) => {
         const subjectQuestions = questionsBySubject[subject] || []
-        const questionsToTake = Math.min(questionsPerSubject, subjectQuestions.length)
+        const questionsToTake = Math.min(questionsPerSubject[index], subjectQuestions.length)
         selectedQuestions.push(...subjectQuestions.slice(0, questionsToTake))
       })
       
@@ -219,12 +216,25 @@ async function loadQuestions(week: number, lecture: number, subjects: string[], 
         const usedQuestionIds = new Set(selectedQuestions.map(q => q.id))
         const additionalQuestions = formattedQuestions
           .filter(q => !usedQuestionIds.has(q.id))
+          .sort((a, b) => a.id.localeCompare(b.id))
           .slice(0, remaining)
         selectedQuestions.push(...additionalQuestions)
       }
       
-      // Shuffle the final questions to mix subjects
-      formattedQuestions = shuffleArray(selectedQuestions.slice(0, questionLimit))
+      // Ensure we have exactly 30 questions (or as many as available)
+      const finalSelectedQuestions = selectedQuestions.slice(0, Math.min(questionLimit, selectedQuestions.length))
+      
+      // Sort by ID to ensure deterministic selection (same questions for both pre-test and post-test)
+      const sortedByID = finalSelectedQuestions.sort((a, b) => a.id.localeCompare(b.id))
+      
+      // For pre-test: use questions in sorted order
+      // For post-test: use the SAME questions but shuffle the order
+      if (type === 'pre-test') {
+        formattedQuestions = sortedByID
+      } else {
+        // Post-test: use same question IDs but shuffle the presentation order
+        formattedQuestions = shuffleArray([...sortedByID])
+      }
     } else if (type === 'mock-exam') {
       formattedQuestions = shuffleArray(formattedQuestions)
       formattedQuestions = formattedQuestions.slice(0, Math.min(questionLimit, formattedQuestions.length))
@@ -280,7 +290,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 function generateMockQuestions(week: number, lecture: number, subjects: string[], type: string) {
-  const questionCount = type === 'mock-exam' ? 100 : 20
+  const questionCount = type === 'mock-exam' ? 100 : (type === 'pre-test' || type === 'post-test' ? 30 : 20)
   const questions = []
 
   for (let i = 1; i <= questionCount; i++) {
